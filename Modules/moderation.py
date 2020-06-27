@@ -5,7 +5,7 @@ import random
 from discord.ext import commands  # Discord
 import pymongo
 import asyncio
-
+import config
 
 
 # Код
@@ -14,8 +14,7 @@ class moderation(commands.Cog):
         self.bot = bot
         self._last_member = None
 
-    # БАН
-
+# <!-- Бан -->
     @commands.command(aliases=["Бан", "бан", "Ban"])
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
@@ -29,90 +28,76 @@ class moderation(commands.Cog):
         if not reason:
             msgdm = f'Вы были забанены на сервере : {ctx.guild.name}.'
             msgg = f'Пользователь : {member.mention}, забанен.'
+            reason = "Не указанна"
 
-        await member.ban(reason=reason)
+        await member.ban(reason=f"[RB]: Модератор {ctx.author.name}, по причине {reason}")
         await ctx.send(msgg)
         await member.send(msgdm)
-
-    # РАЗБАН
-
-    @commands.command(
-        aliases=[
-            "Разбан",
-            "разбан",
-            "Unban"
-        ])
-    @commands.has_permissions(
-        ban_members=True
-    )
+# <!-- Разбан -->
+    @commands.command(aliases=["Разбан", "разбан", "Unban"])
+    @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, member: discord.Member):
         await member.unban()
-        await ctx.send(f'Пользователь : {member}, разбанен.')
+        await ctx.send(f'Пользователь : {member.name}, разбанен.')
         await member.send(f'Вы были разбанены на сервере : {ctx.guild.name}')
 
+# <!-- Обработка ошибок бана -->
     @ban.error
     async def ban_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send(embed=discord.Embed(
-                description=f':exclamation: {ctx.author.name},у вас нет прав для использования данной команды.',
-                color=0x0c0c0c))
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name},обязательно укажите юзера'))
+                embed=discord.Embed(description=f'❗️ {ctx.author.name},обязательно укажите юзера'))
 
     # ОЧИСТКА ЧАТА
 
-    @commands.command(
-        aliases=[
-            "очистить",
-            "очистка",
-            "клир"
-        ])
+    @commands.command(aliases=["очистить", "очистка", "клир"])
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount: int):
 
         await ctx.message.delete()
         await ctx.channel.purge(limit=amount)
         await ctx.send(embed=discord.Embed(
-            description=f'**:heavy_check_mark: Удалено {amount} сообщений.**',
-            color=0x800080),
+            description=f'**❗️ Удалено {amount} сообщений.**',
+            color=config.color),
             delete_after=3
         )
 
-    # Работа с ошибками очистки чата
-
+# <!-- Обработка ошибок очистки чата -->
     @clear.error
     async def clear_error(self, ctx, error):
 
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(embed=discord.Embed(
-                description=f'**:grey_exclamation: {ctx.author.name},обязательно укажите количевство сообщений.**',
-                color=0x0c0c0c)
+                description=f'**❗️ {ctx.author.name},обязательно укажите количевство сообщений.**',
+                color=config.color)
             )
 
-    @commands.command(
-        aliases=[
-            "кик",
-            "Кик",
-            "Kick"
-        ])
+# <!-- Кик -->
+    @commands.command(aliases=["кик", "Кик", "Kick"])
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):
-        await ctx.channel.purge(limit=1)
 
-        await member.kick(reason=reason)
-        await ctx.send(f'Пользователь {member.mention} был кикнут ')
+        if member == ctx.message.author:
+            return await ctx.send("Ты не можешь кикнуть сам себя.")
 
-        emb = discord.Embed(title="Информация о кике", description=f'{member.name.title()}, был кикнут', color=0x800080)
-        emb.set_author(name=member, icon_url=member.avatar_ulr)
+        msgg = f'Пользователь : {member.mention}, кикнут по причине : {reason}.'
+        msgdm = f'Вы были забанены на сервере {ctx.guild.name}, по причине : {reason}.'
 
-        await ctx.send(embed=emb)
+        if not reason:
+            msgdm = f'Вы были кикнуты с сервера : {ctx.guild.name}.'
+            msgg = f'Пользователь : {member.mention}, кикнут.'
+            reason = "Не указанна"
 
+        await member.kick(reason=f"[RB]: Модератор {ctx.author.name}, по причине {reason}")
+        await ctx.send(msgg)
+        await member.send(msgdm)
+
+# <!-- Обработка ошибок кика -->
     @kick.error
     async def kick_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name},обязательно укажите юзера'))
+                embed=discord.Embed(description=f'❗️ {ctx.author.name},обязательно укажите юзера'))
 
 
 
