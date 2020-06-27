@@ -53,19 +53,17 @@ class moderation(commands.Cog):
     @commands.command(aliases=["очистить", "очистка", "клир"])
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount: int):
-
         await ctx.message.delete()
         await ctx.channel.purge(limit=amount)
         await ctx.send(embed=discord.Embed(
             description=f'**❗️ Удалено {amount} сообщений.**',
-            color=config.color,
+            color=config.color),
             delete_after=3
         )
 
-# <!-- Обработка ошибок очистки чата -->
-        @clear.error
-        async def clear_error(self, ctx, error):
-            if isinstance(error, commands.MissingRequiredArgument):
+    @clear.error
+    async def clear_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 embed=discord.Embed(description=f'❗️ {ctx.author.name},обязательно кол-во сообщений!'))
 
