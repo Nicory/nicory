@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: 'Discord message'
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -23,5 +23,3 @@ jobs:
         env:
           DISCORD_WEBHOOK: 'https://discordapp.com/api/webhooks/725377860310663250/Nozx_eZZNReIPsBeFpD49fU7RUvMeXb4PCD1PUgbRVxAbhR-KkxiGjGkTYyzUl0bVI46'
         uses: Ilshidur/action-discord@master
-        with:
-          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
