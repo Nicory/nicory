@@ -5,6 +5,7 @@ import random
 class Fun(commands.Cog):
     def __init__(self, bot):
       self.bot = bot
+      self.cog_name = ["Веселости"]
 
     @commands.command()
     async def google(self, ctx, *, arg):
