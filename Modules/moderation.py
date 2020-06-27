@@ -68,7 +68,7 @@ class moderation(commands.Cog):
         else:
             logs_channel=self.bot.get_channel(int(logs_channel_id["channel_id"]))
             log_embed=discord.Embed(title="Участник был разбанен!", color=config.color)
-            log_embed.add_field(name=f"Модератором", value=f"{ctx.author.mention}", inline=False)
+            log_embed.add_field(name=f"Модератором {ctx.author.name}", value=f"", inline=False)
             await logs_channel.send(embed=log_embed)
 
         await member.unban()
@@ -106,6 +106,14 @@ class moderation(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):
 
+        conn = pymongo.MongoClient(f"mongodb+srv://{user}:{password}@rinoliku-2-qvq4c.mongodb.net/{name}?retryWrites=true&w=majority")
+        db = conn[f"RB_DB"]
+        cursor = db[f"guild_settings_logs"]
+
+        logs_channel_id = cursor.find_one({"guild_id": f"{ctx.guild.id}"})
+        if not logs_channel_id:
+            return
+
         if member == ctx.message.author:
             return await ctx.send("Ты не можешь кикнуть сам себя.")
 
@@ -117,7 +125,11 @@ class moderation(commands.Cog):
             msgg = f'Пользователь : {member.mention}, кикнут.'
             reason = "Не указанна"
 
+        log_embed=discord.Embed(title="Участник был кикнут!", color=config.color)
+        log_embed.add_field(name=f"Модератор: {ctx.author.name}", value=f"По причине `{reason}`", inline=False)
+
         await member.kick(reason=f"[RB]: Модератор {ctx.author.name}, по причине {reason}")
+        await logs_channel.send(embed=log_embed)
         await ctx.send(msgg)
         await member.send(msgdm)
 
