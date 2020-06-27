@@ -18,8 +18,7 @@ class logs(commands.Cog):
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         # Конект БД
-        conn = pymongo.MongoClient(
-            f"mongodb+srv://{user}:{password}@rinoliku-2-qvq4c.mongodb.net/{name}?retryWrites=true&w=majority")
+        conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"guild_settings_logs"]  # Подключаемся к нужной колекции в нужной бд
 
@@ -55,8 +54,7 @@ class logs(commands.Cog):
     async def on_message_edit(self, before, after):
         # Конект БД
         global id
-        conn = pymongo.MongoClient(
-            f"mongodb+srv://{user}:{password}@rinoliku-2-qvq4c.mongodb.net/{name}?retryWrites=true&w=majority")
+        conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"guild_settings_logs"]  # Подключаемся к нужной колекции в нужной бд
 
@@ -92,8 +90,7 @@ class logs(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         # Конект БД
-        conn = pymongo.MongoClient(
-            f"mongodb+srv://{user}:{password}@rinoliku-2-qvq4c.mongodb.net/{name}?retryWrites=true&w=majority")
+        conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"guild_settings_logs"]  # Подключаемся к нужной колекции в нужной бд
 
@@ -120,8 +117,7 @@ class logs(commands.Cog):
     async def on_member_join(self, member):
         # Конект БД
         global id
-        conn = pymongo.MongoClient(
-            f"mongodb+srv://{user}:{password}@rinoliku-2-qvq4c.mongodb.net/{name}?retryWrites=true&w=majority")
+        conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"guild_settings_logs"]  # Подключаемся к нужной колекции в нужной бд
 

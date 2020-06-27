@@ -18,7 +18,7 @@ class Fun(commands.Cog):
         if member == ctx.message.author:
             return await ctx.send("Прости, но ты не можешь обнять сам себя...")
 
-        if member.id == 706600733931339806:
+        if member.id == self.bot.user.id:
             return await ctx.send("Извини, но я не разрешу обнимать себя >:c...")
 
         gifs = ["https://i.gifer.com/WDf.gif", "https://i.gifer.com/GAMC.gif", "https://acegif.com/wp-content/gif/anime-hug-38.gif"]

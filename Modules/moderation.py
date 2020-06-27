@@ -1,8 +1,8 @@
 # Импорт
-import time
 import discord  # Discord
-import random
 from discord.ext import commands  # Discord
+import time
+import random
 import pymongo
 import asyncio
 import config
@@ -23,7 +23,7 @@ class moderation(commands.Cog):
        description="Выдать предупреждение пользователю")
    @commands.has_permissions(kick_members=True)
    async def warn(self, ctx, member: discord.Member = None, *, reason=None):
-       conn = pymongo.MongoClient(f"mongodb+srv://{config.db_user}:{config.db_password}@rinoliku-2-qvq4c.mongodb.net/{config.db_name}?retryWrites=true&w=majority")
+       conn = pymongo.MongoClient(config.MONGODB)
        db = conn[f"RB_DB"]
        cursor = db[f"members_warns"]
        ids = 0
@@ -46,7 +46,7 @@ class moderation(commands.Cog):
        description="Забрать предупреждение у пользовател через ID предупреждения")
    @commands.has_permissions(kick_members=True)
    async def unwarn(self, ctx, ids: int):
-       conn = pymongo.MongoClient(f"mongodb+srv://{config.db_user}:{config.db_password}@rinoliku-2-qvq4c.mongodb.net/{config.db_name}?retryWrites=true&w=majority")
+       conn = pymongo.MongoClient(config.MONGODB)
        db = conn[f"RB_DB"]
        cursor = db[f"members_warns"]
 
@@ -63,7 +63,7 @@ class moderation(commands.Cog):
 
        warn_list = []
 
-       conn = pymongo.MongoClient(f"mongodb+srv://{config.db_user}:{config.db_password}@rinoliku-2-qvq4c.mongodb.net/{config.db_name}?retryWrites=true&w=majority")
+       conn = pymongo.MongoClient(config.MONGODB)
        db = conn[f"RB_DB"]
        cursor = db[f"members_warns"]
 
@@ -86,7 +86,7 @@ class moderation(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
 
-        conn = pymongo.MongoClient(f"mongodb+srv://{user}:{password}@rinoliku-2-qvq4c.mongodb.net/{name}?retryWrites=true&w=majority")
+        conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]
         cursor = db[f"guild_settings_logs"]
 
@@ -120,7 +120,7 @@ class moderation(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, member: discord.Member):
 
-        conn = pymongo.MongoClient(f"mongodb+srv://{user}:{password}@rinoliku-2-qvq4c.mongodb.net/{name}?retryWrites=true&w=majority")
+        conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]
         cursor = db[f"guild_settings_logs"]
 
@@ -169,7 +169,7 @@ class moderation(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):
 
-        conn = pymongo.MongoClient(f"mongodb+srv://{user}:{password}@rinoliku-2-qvq4c.mongodb.net/{name}?retryWrites=true&w=majority")
+        conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]
         cursor = db[f"guild_settings_logs"]
 
