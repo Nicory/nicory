@@ -13,14 +13,6 @@ class Fun(commands.Cog):
         await ctx.send(f"Я сгенерировала ссылку по вашему запросу:\nhttps://google.gik-team.com?q={escaped}")
 
     @commands.command(aliases=["обнять", "Обнять", "Hug"])
-    async def hug(self, ctx):
-            @commands.command(
-        aliases=[
-            "Обнять",
-            "обнять",
-            "Hug"
-        ]
-    )
     async def hug(self, ctx, member: discord.Member):
 
         if member == ctx.message.author:
