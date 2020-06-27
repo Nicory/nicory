@@ -58,19 +58,16 @@ class moderation(commands.Cog):
         await ctx.channel.purge(limit=amount)
         await ctx.send(embed=discord.Embed(
             description=f'**❗️ Удалено {amount} сообщений.**',
-            color=config.color),
+            color=config.color,
             delete_after=3
         )
 
 # <!-- Обработка ошибок очистки чата -->
-    @clear.error
-    async def clear_error(self, ctx, error):
-
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(embed=discord.Embed(
-                description=f'**❗️ {ctx.author.name},обязательно укажите количевство сообщений.**',
-                color=config.color)
-            )
+        @clear.error
+        async def clear_error(self, ctx, error):
+            if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(
+                embed=discord.Embed(description=f'❗️ {ctx.author.name},обязательно кол-во сообщений!'))
 
 # <!-- Кик -->
     @commands.command(aliases=["кик", "Кик", "Kick"])
