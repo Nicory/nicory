@@ -44,7 +44,7 @@ class moderation(commands.Cog):
 
         else:
             logs_channel=self.bot.get_channel(int(logs_channel_id["channel_id"]))
-            log_embed=discord.Embed(title=f"❗️Участник {member.mention} был забанен!", color=config.color)
+            log_embed=discord.Embed(title=f"❗️Участник {member.name} был забанен!", color=config.color)
             log_embed.add_field(name=f"Модератор: {ctx.author.name}", value=f"По причине `{reason}`", inline=False)
             await logs_channel.send(embed=log_embed)
 
