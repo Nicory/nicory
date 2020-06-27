@@ -23,12 +23,12 @@ class Fun(commands.Cog):
 
         gifs = ["https://i.gifer.com/WDf.gif", "https://i.gifer.com/GAMC.gif", "https://acegif.com/wp-content/gif/anime-hug-38.gif"]
 
-            r_gif = random.choice(gifs)
+        r_gif = random.choice(gifs)
 
-            hug_embed = discord.Embed(description=f"{ctx.author.mention} обнял {member.mention}")
-            hug_embed.set_image(url=r_gif)
+        hug_embed = discord.Embed(description=f"{ctx.author.mention} обнял {member.mention}")
+        hug_embed.set_image(url=r_gif)
 
-            await ctx.send(embed=hug_embed)
+        await ctx.send(embed=hug_embed)
 
 
 
