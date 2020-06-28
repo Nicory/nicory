@@ -10,6 +10,7 @@ class economy(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._last_member = None
+        self.cog_name = ["Экономика"]
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -47,7 +48,8 @@ class economy(commands.Cog):
             "баланс",
             "Баланс",
             "Balance"
-        ]
+        ],
+        description="Посмотреть свой баланс"
     )
     async def __bal(self, ctx, member: discord.Member = None):
 
@@ -87,8 +89,8 @@ class economy(commands.Cog):
             "award",
             "выдать",
             "Выдать"
-
-        ]
+        ],
+        description="Выдать пользователю деньги"
     )
     @commands.has_permissions(
         administrator=True
@@ -139,7 +141,8 @@ class economy(commands.Cog):
             "забрать",
             "take",
             "Забрать"
-        ]
+        ],
+        description="Забрать у пользвателя деньги"
     )
     @commands.has_permissions(
         administrator=True
@@ -194,7 +197,8 @@ class economy(commands.Cog):
         aliases=[
             "добавить-в-магазин",
             "add-shop"
-        ]
+        ],
+        description="Добавить товар в магазин"
     )
     @commands.has_permissions(
         administrator=True
@@ -226,7 +230,8 @@ class economy(commands.Cog):
         aliases=[
             "удалить-из-магазина",
             "remove-shop"
-        ]
+        ],
+        description="Удалить товар из магазина"
     )
     @commands.has_permissions(
         administrator=True
@@ -256,7 +261,8 @@ class economy(commands.Cog):
         aliases=[
             "shop",
             "магазин"
-        ]
+        ],
+        description="Посмотреть товары в магазине"
     )
     async def __shop(self, ctx):
 
@@ -286,7 +292,8 @@ class economy(commands.Cog):
         aliases=[
             "buy",
             "купить"
-        ]
+        ],
+        description="Купить Товар"
     )
     async def __buy(self, ctx, role: discord.Role = None):
 
@@ -332,7 +339,8 @@ class economy(commands.Cog):
             "Работать",
             "Работа",
             "работа"
-        ]
+        ],
+        description="Работать чтобы заработать деньги"
     )
     @commands.cooldown(1, 1800, commands.BucketType.member)
     async def work(self, ctx, *, arg):
@@ -343,9 +351,9 @@ class economy(commands.Cog):
 
         arg = arg.lower()
 
-        custom_work = cursor_custom_work.find({"guild": f"{ctx.guild.id}"})
+        custom_work = cursor_guild_custom_works.find({"guild": f"{ctx.guild.id}"})
         for i in custom_work:
-            c_w=i['work']
+            c_w = i['work']
             min = i['min']
             max = i['max']
             # c_w = custom work
@@ -412,7 +420,8 @@ class economy(commands.Cog):
     @commands.command(
         aliases=[
             "добавить-работу"
-        ]
+        ],
+        description="Добавить свою работу"
     )
     @commands.has_permissions(
         administrator=True
@@ -439,7 +448,8 @@ class economy(commands.Cog):
     @commands.command(
         aliases=[
             "удалить-работу"
-        ]
+        ],
+        description="Удалить работу"
     )
     @commands.has_permissions(
         administrator=True
@@ -465,7 +475,8 @@ class economy(commands.Cog):
         aliases=[
             "Работы",
             "работы"
-        ]
+        ],
+        description="Список работ"
     )
     async def __works(self, ctx):
 
@@ -497,7 +508,8 @@ class economy(commands.Cog):
             "Bet",
             "ставка",
             "Ставка"
-        ]
+        ],
+        description="Сделать ставку"
     )
     @commands.cooldown(1, 5, commands.BucketType.member)
     async def bet(self, ctx, amount: int = None):
@@ -516,8 +528,9 @@ class economy(commands.Cog):
         money = m['money']
 
         if amount is None:
+            self.bet.reset_cooldown(ctx)
             return await ctx.send(f"{ctx.author.mention}, укажите сколько денег хотите поставить")
-            bet.reset_cooldown(ctx)
+
         elif amount <= 0:
             return await ctx.send(f"{ctx.author.mention}, укажите количество больше 0")
 
@@ -553,7 +566,8 @@ class economy(commands.Cog):
             "Transfer",
             "перевести",
             "Перевести"
-        ]
+        ],
+        description="Перевести другому пользователю деньги"
     )
     async def __transfer(self, ctx, member: discord.Member = None, amount: int = None):
 
@@ -620,7 +634,8 @@ class economy(commands.Cog):
         aliases=[
             "Лидеры",
             "лидеры"
-        ]
+        ],
+        description="Рейтинг самых богатых пользователей сервера"
     )
     async def __top(self, ctx):
 

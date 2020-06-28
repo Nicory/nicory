@@ -9,7 +9,7 @@ class logs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._last_member = None
-        self.cog_name = ["Логи", "False"]
+        self.cog_name = ["Логи", "True"]
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
