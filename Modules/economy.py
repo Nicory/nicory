@@ -352,6 +352,11 @@ class economy(commands.Cog):
         arg = arg.lower()
 
         custom_work = cursor_guild_custom_works.find({"guild": f"{ctx.guild.id}"})
+
+        c_w = None
+        min = None
+        max = None
+
         for i in custom_work:
             c_w = i['work']
             min = i['min']
@@ -375,6 +380,7 @@ class economy(commands.Cog):
             "грузчик",
             "дворник"
         ]
+        m = 0
         if arg in good_work:
             m = random.randint(50, 600)
         elif arg in medium_work:
@@ -385,7 +391,7 @@ class economy(commands.Cog):
         elif arg in c_w:
             m = random.randint(min, max)
 
-        elif arg not in good_work and medium_work and bad_work and c_w:
+        elif arg not in good_work and arg not in medium_work and arg not in bad_work and arg not in c_w:
             self.work.reset_cooldown(ctx)
             return await ctx.send(f"{ctx.author.mention}, я не обнаружила вашу работу ни в одном из списков, пропишите `!!работы` чтоб узнать список всех работ.")
 
