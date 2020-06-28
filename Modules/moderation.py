@@ -12,6 +12,7 @@ user = config.db_user
 password = config.db_password
 name = config.db_name
 
+
 # Код
 class moderation(commands.Cog):
     def __init__(self, bot):
@@ -29,7 +30,7 @@ class moderation(commands.Cog):
         cursor = db[f"members_warns"]
         ids = 0
 
-        for i in cursor.find({"guild": f"{message.guild.id}"}).sort("id", -1):
+        for i in cursor.find({"guild": f"{ctx.message.guild.id}"}).sort("id", -1):
             if not i["id"]:
                 ids = 1
                 break
@@ -38,9 +39,9 @@ class moderation(commands.Cog):
                 break
 
         cursor.insert_one(
-            {"id": ids, "guild": f"{message.guild.id}", "member": f"{member.id}", "moderator": f"{moderator}","reason": f"{reason}"})
+            {"id": ids, "guild": f"{ctx.message.guild.id}", "member": f"{member.id}", "moderator": f"{ctx.author.id}","reason": f"{reason}"})
 
-        await ctx.send(f"Предупреждение пользователю {member.display_name} с причиной {reason} успешно выдано! (ID предупреждения - `{number}`)")
+        await ctx.send(f"Предупреждение пользователю {member.display_name} с причиной {reason} успешно выдано! (ID предупреждения - `{ids}`)")
 
     @commands.command(
         aliases=["убратьпред", "убратьварн"],
@@ -51,8 +52,8 @@ class moderation(commands.Cog):
         db = conn[f"RB_DB"]
         cursor = db[f"members_warns"]
 
-        cursor.delete_one({"guild": f"{message.guild.id}", "id": ids})
-        await ctx.send(f"Предупреждение пользователю {member.display_name} успешно убрано!")
+        cursor.delete_one({"guild": f"{ctx.message.guild.id}", "id": ids})
+        await ctx.send(f"Предупреждение под номером `{ids}` успешно убрано!")
 
     @commands.command(
         aliases=["преды", "варны"],
@@ -68,7 +69,7 @@ class moderation(commands.Cog):
         db = conn[f"RB_DB"]
         cursor = db[f"members_warns"]
 
-        cursor.find({"guild": f"{message.guild.id}", "user": f"{member.id}"}).sort("id", -1)
+        warns = cursor.find({"guild": f"{ctx.message.guild.id}", "user": f"{member.id}"}).sort("id", -1)
 
         for i in warns:
             moder = ctx.guild.get_member(int(i['moderator']))
