@@ -9,6 +9,7 @@ import random
 class Main(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
+    self.cog_name = ["Основное"]
 
   @commands.command()
   @commands.has_permissions(administrator=True)
