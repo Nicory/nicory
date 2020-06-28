@@ -135,7 +135,7 @@ class moderation(commands.Cog):
         ],
         description="Просмотреть варны юзера"
     )
-    async def warns(self, ctx, member: discord.Member):
+    async def warns(self, ctx, member: discord.Member=None):
         # Конект БД
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
