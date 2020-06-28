@@ -15,6 +15,7 @@ class ping(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._last_member = None
+        self.cog_name = ["что-то", "Второй элемент в списке == ког не виден в хелпе"]
 
     @commands.command()
     async def ping(self, ctx, arg):

@@ -14,6 +14,7 @@ class logs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._last_member = None
+        self.cog_name = ["Логи", "False"]
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
