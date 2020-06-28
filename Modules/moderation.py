@@ -43,16 +43,8 @@ class moderation(commands.Cog):
         if not max_warns:
             pass
 
-        if member.id == ctx.author.id:
-            return await ctx.send("Ты не можешь выдать предупреждение самому себе...")
-
-        if ctx.author.top_role.position < member.top_role.position:
-            return await ctx.send('Нельзя выдать варн вышестоящему по роли человеку!')
-
-        ids = 1
-        for i in cursor.find({"guild": f"{ctx.guild.id}"}).sort("id", -1):
-
-            if not ["id"]:
+        for i in cursor.find({"guild": f"{ctx.message.guild.id}"}).sort("id", -1):
+            if not i["id"]:
                 ids = 1
                 break
 
@@ -93,37 +85,10 @@ class moderation(commands.Cog):
                 await ctx.send(embed=warn_embed)
                 await member.send(embed=warn_embed_d)
 
-        else:
-            warn_embed = discord.Embed(
-                description=f"Юзеру {member.mention} было выдано предупреждение по причине `{arg}`, его уникальный номер: `{ids}`",
-                color=config.color
-            )
+        cursor.insert_one(
+            {"id": ids, "guild": f"{ctx.message.guild.id}", "member": f"{member.id}", "moderator": f"{ctx.author.id}","reason": f"{reason}"})
 
-            warn_embed.set_footer(
-                text='Rinuku Bot | Все права были зашифрованны в двоичный код',
-                icon_url=self.bot.user.avatar_url
-            )
-
-            warn_embed_d = discord.Embed(
-                description=f"Вам было выдано предупреждение модератором `{ctx.author.name}`, по причине `{arg}`, его уникальный номер: `{ids}`",
-                color=config.color
-            )
-
-            warn_embed_d.set_footer(
-                text='Rinuku Bot | Все права были зашифрованны в двоичный код',
-                icon_url=self.bot.user.avatar_url
-            )
-
-            await ctx.send(embed=warn_embed)
-            await member.send(embed=warn_embed_d)
-
-    @warn.error
-    async def warn_error(self, ctx, error):
-
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(embed=discord.Embed(
-                description=f'❗️ {ctx.author.name}, используй эту команду так: `варн <пинг юзера> <причина>`!',
-                color=config.error_color))
+        await ctx.send(f"Предупреждение пользователю {member.display_name} с причиной {reason} успешно выдано! (ID предупреждения - `{ids}`)")
 
     @commands.command(
         aliases=[
@@ -144,7 +109,8 @@ class moderation(commands.Cog):
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"members_warns"]  # Подключаемся к нужной колекции в нужной бд
 
-        cursor.delete_one({"guild": f"{ctx.guild.id}", "id": arg})
+        cursor.delete_one({"guild": f"{ctx.message.guild.id}", "id": ids})
+        await ctx.send(f"Предупреждение под номером `{ids}` успешно убрано!")
 
         unwarn_embed = discord.Embed(
             description=f"Варн, уникальный номер которого:`{arg}` был успешно снят!",
@@ -165,16 +131,7 @@ class moderation(commands.Cog):
                 description=f'❗️ {ctx.author.name},обязательно укажите уникальный номер варна!',
                 color=config.error_color))
 
-    @commands.command(
-        aliases=[
-            "Варны",
-            "варны",
-            "Преды",
-            "преды",
-            "Warns"
-        ]
-    )
-    async def warns(self, ctx, member: discord.Member = None):
+        warns = cursor.find({"guild": f"{ctx.message.guild.id}", "user": f"{member.id}"}).sort("id", -1)
 
         # Конект БД
         conn = pymongo.MongoClient(config.MONGODB)
