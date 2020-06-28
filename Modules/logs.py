@@ -4,11 +4,6 @@ from discord.ext import commands  # Discord
 import pymongo
 import config
 
-# <!-- DB Data -->
-user = config.db_user
-password = config.db_password
-name = config.db_name
-
 # Код
 class logs(commands.Cog):
     def __init__(self, bot):
