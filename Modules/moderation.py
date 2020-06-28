@@ -15,17 +15,10 @@ class moderation(commands.Cog):
         self.cog_name = ["Модерирование"]
 
     @commands.command(
-        aliases=[
-            "Пред",
-            "пред",
-            "Варн",
-            "варн",
-            "Warn"
-        ]
+    aliases=["Пред", "пред", "Варн", "варн", "Warn"],
+    description="Выдать предупреждение юзеру"
     )
-    @commands.has_permissions(
-        kick_members=True
-    )
+    @commands.has_permissions(kick_members=True)
     async def warn(self, ctx, member: discord.Member, *, arg):
 
         # Конект БД
@@ -97,7 +90,8 @@ class moderation(commands.Cog):
             "Снятьварн",
             "снятьварн",
             "Unwarn"
-        ]
+        ],
+        description="Снять варн юзеру [Для снятие варна используйте уникальный ID варна]"
     )
     @commands.has_permissions(
         kick_members=True
@@ -131,8 +125,17 @@ class moderation(commands.Cog):
                 description=f'❗️ {ctx.author.name},обязательно укажите уникальный номер варна!',
                 color=config.error_color))
 
-        warns = cursor.find({"guild": f"{ctx.message.guild.id}", "user": f"{member.id}"}).sort("id", -1)
-
+    @commands.command(
+        aliases=[
+            "Варны",
+            "варны",
+            "Преды",
+            "преды",
+            "Warns"
+        ],
+        description="Просмотреть варны юзера"
+    )
+    async def warns(self, ctx, member: discord.Member):
         # Конект БД
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -182,7 +185,7 @@ class moderation(commands.Cog):
 
 
 # <!-- Бан -->
-    @commands.command(aliases=["Бан", "бан", "Ban"])
+    @commands.command(aliases=["Бан", "бан", "Ban"], description="Забанить юзера")
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
 
@@ -216,7 +219,7 @@ class moderation(commands.Cog):
         await member.send(msgdm)
 
 # <!-- Разбан -->
-    @commands.command(aliases=["Разбан", "разбан", "Unban"])
+    @commands.command(aliases=["Разбан", "разбан", "Unban"], description="Разбанить юзера")
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, member: discord.Member):
 
@@ -247,7 +250,7 @@ class moderation(commands.Cog):
 
     # ОЧИСТКА ЧАТА
 
-    @commands.command(aliases=["очистить", "очистка", "клир"])
+    @commands.command(aliases=["очистить", "очистка", "клир"], description="Очистить чат")
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount: int):
         await ctx.message.delete()
@@ -265,7 +268,7 @@ class moderation(commands.Cog):
                 embed=discord.Embed(description=f'❗️ {ctx.author.name},обязательно кол-во сообщений!', color=config.error_color))
 
     # <!-- Кик -->
-    @commands.command(aliases=["кик", "Кик", "Kick"])
+    @commands.command(aliases=["кик", "Кик", "Kick"], description="Кикнуть юзера")
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):
 
