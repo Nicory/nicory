@@ -79,9 +79,9 @@ class moderation(commands.Cog):
                 await member.send(embed=warn_embed_d)
 
         cursor.insert_one(
-            {"id": ids, "guild": f"{ctx.message.guild.id}", "member": f"{member.id}", "moderator": f"{ctx.author.id}","reason": f"{reason}"})
+            {"id": ids, "guild": f"{ctx.message.guild.id}", "member": f"{member.id}", "moderator": f"{ctx.author.id}","reason": f"{arg}"})
 
-        await ctx.send(f"Предупреждение пользователю {member.display_name} с причиной {reason} успешно выдано! (ID предупреждения - `{ids}`)")
+        await ctx.send(f"Предупреждение пользователю {member.display_name} с причиной {arg} успешно выдано! (ID предупреждения - `{ids}`)")
 
     @commands.command(
         aliases=[
@@ -96,7 +96,7 @@ class moderation(commands.Cog):
     @commands.has_permissions(
         kick_members=True
     )
-    async def unwarn(self, ctx, arg: int):
+    async def unwarn(self, ctx, ids: int):
 
         # Конект БД
         conn = pymongo.MongoClient(config.MONGODB)
@@ -107,7 +107,7 @@ class moderation(commands.Cog):
         await ctx.send(f"Предупреждение под номером `{ids}` успешно убрано!")
 
         unwarn_embed = discord.Embed(
-            description=f"Варн, уникальный номер которого:`{arg}` был успешно снят!",
+            description=f"Варн, уникальный номер которого:`{ids}` был успешно снят!",
             color=config.color
         )
 
@@ -142,47 +142,27 @@ class moderation(commands.Cog):
         cursor = db[f"members_warns"]  # Подключаемся к нужной колекции в нужной бд
 
         if not member:
-            a = []
+            member = ctx.author
 
-            for i in cursor.find(
-                    {"guild": f"{ctx.guild.id}", "member": f"{ctx.author.id}", "moderator": f"{ctx.author.name}"}).sort("id", -1):
-                a.append(f"`ID - {i['id']}` | Модератор - {i['moderator']} | Причина - {i['reason']}\n")
-            if not a:
-                a = ["Юзер не имеет варнов"]
-            embed = discord.Embed(
-                title=f"Варны {ctx.author.display_name}",
-                description="".join(a),
-                color=config.color
-            )
+        a = []
 
-            embed.set_footer(
-                text='Rinuku Bot | Все права были зашифрованны в двоичный код',
-                icon_url=self.bot.user.avatar_url
-            )
-            embed.set_thumbnail(url=ctx.author.avatar_url)
-            await ctx.send(embed=embed)
+        for i in cursor.find({"guild": f"{ctx.guild.id}", "member": f"{member.id}"}).sort("id", -1):
+            a.append(f"`ID - {i['id']}` | Модератор - {i['moderator']} | Причина - {i['reason']}\n")
 
-        else:
-            a = []
+        if not a:
+            a = ["Юзер не имеет варнов"]
+        embed = discord.Embed(
+            title=f"Варны {member.display_name}",
+            description="".join(a),
+            color=config.color
+        )
 
-            for i in cursor.find(
-                    {"guild": f"{ctx.guild.id}", "member": f"{member.id}", "moderator": f"{ctx.author.name}"}).sort("id", -1):
-                a.append(f"`ID - {i['id']}` | Модератор - {i['moderator']} | Причина - {i['reason']}\n")
-            if not a:
-                a = ["Юзер не имеет варнов"]
-            embed = discord.Embed(
-                title=f"Варны {member.display_name}",
-                description="".join(a),
-                color=config.color
-            )
-
-            embed.set_footer(
-                text='Rinuku Bot | Все права были зашифрованны в двоичный код',
-                icon_url=self.bot.user.avatar_url
-            )
-            embed.set_thumbnail(url=member.avatar_url)
-            await ctx.send(embed=embed)
-
+        embed.set_footer(
+            text='Rinuku Bot | Все права были зашифрованны в двоичный код',
+            icon_url=self.bot.user.avatar_url
+        )
+        embed.set_thumbnail(url=ctx.author.avatar_url)
+        await ctx.send(embed=embed)
 
 # <!-- Бан -->
     @commands.command(aliases=["Бан", "бан", "Ban"], description="Забанить юзера")
