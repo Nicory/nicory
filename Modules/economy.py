@@ -127,7 +127,7 @@ class economy(commands.Cog):
             else:
                 mount = bal["money"] + amount
                 if cursor.find_one({"guild": f"{ctx.guild.id}", "m_id": f"{member.id}"}):
-                    cursor.update_one({"m_id": f"{member.id}"}, {'$set': {"money": mount}})
+                    cursor.update_one({"guild": f"{ctx.guild.id}", "m_id": f"{member.id}"}, {'$set': {"money": mount}})
 
                     emb = discord.Embed(
                         description=f"На баланс пользователя {member.mention} было зачисленно {amount} кредит(ов)!",
@@ -135,6 +135,8 @@ class economy(commands.Cog):
                     )
 
                     await ctx.send(embed=emb)
+                else:
+                    await ctx.send(f"{ctx.author.mention}, я не обнаружила данного юзера в базе данных.")
 
     @commands.command(
         aliases=[
