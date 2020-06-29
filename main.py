@@ -8,6 +8,7 @@
 # Импорт библиотек
 import asyncio
 import time
+from loops import Loop
 
 import discord
 import config
@@ -19,6 +20,7 @@ from colorama import init  # Цветная консоль
 from discord.ext import commands
 
 status = config.status
+Loop.activator()
 init()
 
 client = commands.Bot(command_prefix="#")
@@ -49,6 +51,15 @@ for file in os.listdir("./Modules"):
     if file.endswith(".py"):
         client.load_extension(f'Modules.{file[:-3]}')
         print(Fore.YELLOW + "[RB Log] " + Style.RESET_ALL + f"Module loaded - {file[:-3]}")
+
+
+@client.event
+async def on_message(message):
+    mute_role = discord.utils.get(message.guild.roles, name="RB_Muted")
+    if mute_role in message.author.roles:
+        await message.delete()
+    else:
+        await client.process_commands(message)
 
 
 # LUR Система

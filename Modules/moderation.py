@@ -37,18 +37,18 @@ class moderation(commands.Cog):
         times = time.time()
         times += timed
 
-        mute_role = discord.utils.get(ctx.message.guild.roles, name="Mute")
+        mute_role = discord.utils.get(ctx.message.guild.roles, name="RB_Muted")
 
         if not mute_role:
-            mute_role = await ctx.guild.create_role(name="Mute")
+            mute_role = await ctx.guild.create_role(name="RB_Muted")
 
         if mute_role in member.roles:
             await ctx.send(embed=discord.Embed(description=f'**:warning: Пользователь {member.mention} уже замьючен!**',
-                                               color=0x800080))
+                                               color=config.error_color))
         else:
             i = cursor.find_one({"guild": f"{ctx.guild.id}", "id": f"{member.id}"})
             if i is None:
-                cursor.insert_one({"guild": f"{guild.id}", "id": f"{member.id}", "mute": 0})
+                cursor.insert_one({"guild": f"{ctx.guild.id}", "id": f"{member.id}", "mute": 0})
 
             cursor.update({"guild": f"{ctx.guild.id}", "id": f"{member.id}"}, {'$set': {"mute": times}})
 
@@ -57,14 +57,14 @@ class moderation(commands.Cog):
                                    atomic=True)
             await ctx.send(
                 embed=discord.Embed(description=f'**:shield: Мьют пользователю {member.mention} успешно выдан!**',
-                                    color=0x0000FF))
+                                    color=config.color))
 
     @mute.error
     async def mute_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(embed=discord.Embed(
                 description=f'**:grey_exclamation: {ctx.author.name}, обязательно укажите юзера и время!**\n+мьют <юзер> <время> <тип времени>',
-                color=0x0c0c0c))
+                color=config.error_color))
 
     # Размьют
     @commands.command(
@@ -97,11 +97,11 @@ class moderation(commands.Cog):
             await member.remove_roles(mute_role)
             await ctx.send(embed=discord.Embed(
                 description=f'**:white_check_mark: Мьют у пользователя {member.mention} Успешно снят! **',
-                color=0x800080))
+                color=config.color))
         else:
             await ctx.send(
                 embed=discord.Embed(description=f'**:warning: Пользователь {member.mention} Не замьючен!**',
-                                    color=0x800080))
+                                    color=config.error_color))
 
     @unmute.error
     async def unmute_error(self, ctx, error):
