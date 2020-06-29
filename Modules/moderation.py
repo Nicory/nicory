@@ -15,9 +15,104 @@ class moderation(commands.Cog):
         self.cog_name = ["Модерирование"]
 
     @commands.command(
+        aliases=["мьют", "мут", "Мут", "Мьют", "Mute"],
+        description="Дать мьют пользователю")
+    @commands.has_permissions(manage_messages=True)
+    async def mute(self, ctx, member: discord.Member, timenumber: int, typetime):
+        conn = pymongo.MongoClient(config.MONGODB)
+        db = conn[f"RB_DB"]  # Подключаемся к нужно БД
+        cursor = db[f"members_mute"]  # Подключаемся к нужной колекции в нужной бд
+
+        timed = 0
+
+        if typetime == "s" or typetime == "сек" or typetime == "секунд":
+            timed = timenumber
+        elif typetime == "m" or typetime == "мин" or typetime == "минут":
+            timed = timenumber * 60
+        elif typetime == "h" or typetime == "час" or typetime == "часов":
+            timed = timenumber * 60 * 60
+        elif typetime == "d" or typetime == "день" or typetime == "дней":
+            timed = timenumber * 60 * 60 * 24
+
+        times = time.time()
+        times += timed
+
+        mute_role = discord.utils.get(ctx.message.guild.roles, name="Mute")
+
+        if not mute_role:
+            mute_role = await ctx.guild.create_role(name="Mute")
+
+        if mute_role in member.roles:
+            await ctx.send(embed=discord.Embed(description=f'**:warning: Пользователь {member.mention} уже замьючен!**',
+                                               color=0x800080))
+        else:
+            i = cursor.find_one({"guild": f"{ctx.guild.id}", "id": f"{member.id}"})
+            if i is None:
+                cursor.insert_one({"guild": f"{guild.id}", "id": f"{member.id}", "mute": 0})
+
+            cursor.update({"guild": f"{ctx.guild.id}", "id": f"{member.id}"}, {'$set': {"mute": times}})
+
+            await member.add_roles(mute_role,
+                                   reason=f"Пользователь {ctx.author.display_name} выдал мьют на {timenumber} {typetime}",
+                                   atomic=True)
+            await ctx.send(
+                embed=discord.Embed(description=f'**:shield: Мьют пользователю {member.mention} успешно выдан!**',
+                                    color=0x0000FF))
+
+    @mute.error
+    async def mute_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(embed=discord.Embed(
+                description=f'**:grey_exclamation: {ctx.author.name}, обязательно укажите юзера и время!**\n+мьют <юзер> <время> <тип времени>',
+                color=0x0c0c0c))
+
+    # Размьют
+    @commands.command(
+        aliases=["размьют", "размут", "Размут", "Разьют", "Unmute"],
+        description="снять мьют у пользователя")
+    @commands.has_permissions(manage_messages=True)
+    async def unmute(self, ctx, member: discord.Member):
+        conn = pymongo.MongoClient(config.MONGODB)
+        db = conn[f"RB_DB"]  # Подключаемся к нужно БД
+        cursor = db[f"members_mute"]  # Подключаемся к нужной колекции в нужной бд
+
+        i = cursor.find_one({"id": f"{ctx.author.id}", "guild": f"{ctx.guild.id}"})
+        if i:
+            mutes = i
+        else:
+            cursor.insert_one({"guild": f"{ctx.guild.id}", "id": f"{ctx.author.id}", "mute": 0})
+            mutes = cursor.find_one({"id": f"{ctx.author.id}", "guild": f"{ctx.guild.id}"})
+
+        mute = mutes["mute"]
+
+        mute_role = discord.utils.get(ctx.message.guild.roles, name="Mute")
+
+        if mute != 0:
+            i = cursor.find_one({"guild": f"{ctx.guild.id}", "id": f"{member.id}"})
+            if i is None:
+                cursor.insert_one({"guild": f"{ctx.guild.id}", "id": f"{member.id}", "mute": 0})
+
+            cursor.update({"guild": f"{ctx.guild.id}", "id": f"{member.id}"}, {'$set': {"mute": 0}})
+
+            await member.remove_roles(mute_role)
+            await ctx.send(embed=discord.Embed(
+                description=f'**:white_check_mark: Мьют у пользователя {member.mention} Успешно снят! **',
+                color=0x800080))
+        else:
+            await ctx.send(
+                embed=discord.Embed(description=f'**:warning: Пользователь {member.mention} Не замьючен!**',
+                                    color=0x800080))
+
+    @unmute.error
+    async def unmute_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(embed=discord.Embed(
+                description=f'**:grey_exclamation: {ctx.author.name}, обязательно укажите юзера!**\n+размьют <юзер>',
+                color=0x0c0c0c))
+
+    @commands.command(
     aliases=["Пред", "пред", "Варн", "варн", "Warn"],
-    description="Выдать предупреждение юзеру"
-    )
+    description="Выдать предупреждение юзеру")
     @commands.has_permissions(kick_members=True)
     async def warn(self, ctx, member: discord.Member, *, arg):
 
@@ -256,9 +351,9 @@ class moderation(commands.Cog):
         db = conn[f"RB_DB"]
         cursor = db[f"guild_settings_logs"]
 
-        logs_channel_id = cursor.find_one({"guild_id": f"{ctx.guild.id}"})
-        if not logs_channel_id:
-            return
+        # logs_channel_id = cursor.find_one({"guild_id": f"{ctx.guild.id}"})
+        # if not logs_channel_id:
+        #    return
 
         if member == ctx.message.author:
             return await ctx.send("Ты не можешь кикнуть сам себя.")
@@ -271,11 +366,11 @@ class moderation(commands.Cog):
             msgg = f'Пользователь : {member.mention}, кикнут.'
             reason = "Не указанна"
 
-        log_embed=discord.Embed(title="Участник был кикнут!", color=config.color)
-        log_embed.add_field(name=f"Модератор: {ctx.author.name}", value=f"По причине `{reason}`", inline=False)
+        # log_embed=discord.Embed(title="Участник был кикнут!", color=config.color)
+        # log_embed.add_field(name=f"Модератор: {ctx.author.name}", value=f"По причине `{reason}`", inline=False)
 
         await member.kick(reason=f"[RB]: Модератор {ctx.author.name}, по причине {reason}")
-        await logs_channel.send(embed=log_embed)
+        # await logs_channel.send(embed=log_embed)
         await ctx.send(msgg)
         await member.send(msgdm)
 
