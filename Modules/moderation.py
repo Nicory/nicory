@@ -307,7 +307,7 @@ class moderation(commands.Cog):
             return
 
         else:
-            logs_channel=self.bot.get_channel(int(logs_channel_id["channel_id"]))
+            logs_channel=self.bot.get_channel(int(logs_channel_id["channel"]))
             log_embed=discord.Embed(title="Участник был разбанен!", color=config.color)
             log_embed.add_field(name=f"Модератором {ctx.author.name}", value=f"", inline=False)
             await logs_channel.send(embed=log_embed)
@@ -381,7 +381,55 @@ class moderation(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(description=f'❗️ {ctx.author.name},обязательно укажите юзера'))
 
+# <!-- Репорты -->
+    @commands.command(
+        aliases=[
+            "Репорт",
+            "репорт"
+        ],
+        description="Написать жалобу на юзера"
+    )
+    async def report(self, ctx):
+        conn = pymongo.MongoClient(config.MONGODB)
+        db = conn[f"RB_DB"]
+        cursor = db[f"guild_settings_reports"]
 
+        author = ctx.message.author
+        author_name = ctx.message.author.name
+
+        ticketc = f'репорт-' + author_name
+        get_report = ticketc.lower()
+
+        if get_report in ctx.guild.channels:
+            await ctx.send(f"У вас уже создан репорт!")
+
+        else:
+            await ctx.message.delete()
+            await ctx.send("Репорт успешно создан!")
+
+            get_info=cursor.cursor.find_one({
+                "guild": f"{ctx.guild.id}"
+            })
+
+            report_category=discord.utils.get(ctx.guild.categories, id=int(get_info['category']))
+
+            if not report_category:
+                return await ctx.send(f"{ctx.author.mention}, администрация не указала канал для репортов!")
+
+            await ctx.guild.create_text_channel(f'репорт-{author_name}', overwrites=None, category=report_category, reason='Создание репорта.')
+            for channel in ctx.guild.channels:
+                if channel.name == f'репорт {author}':
+                    break
+
+            await channel.set_permissions(author, read_messages=True, send_messages=True)
+
+            report_embed=discord.Embed(
+                title=f"Репорт {author_name}",
+                description=f"Для обработки вашей жалобы я создала отдельный канал с модерацией сервера.\nПожалуйста, кратко и понятно объясните суть вашей жалобы.",
+                color=config.color
+            )
+            await channel.send(f"{ctx.author.mention}")
+            await channel.send(embed=report_embed)
 
 def setup(client):
     client.add_cog(moderation(client))
