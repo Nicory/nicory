@@ -391,6 +391,8 @@ class moderation(commands.Cog):
         db = conn[f"RB_DB"]
         cursor = db[f"guild_settings_reports"]
         prefix = db["guild_settings_prefixes "].find_one({"guild": f"{ctx.guild.id}"})["prefix"]
+        if prefix is None:
+            prefix = "!!"
 
         author = ctx.message.author.name
         author = author.lower()
@@ -400,7 +402,7 @@ class moderation(commands.Cog):
 
         color = config.color  # Цвет полоски
 
-        ticketc = f'тикет-{author}'
+        ticketc = f'репорт-{author}'
 
         reportc = cursor.find_one({"guild": f"{ctx.guild.id}"})["channel"]
 
@@ -415,14 +417,14 @@ class moderation(commands.Cog):
                 llist.append(i.name)
 
             if ticketc in llist:
-                await ctx.send(f"У вас уже открыт тикет, напишите {prefix}`закрытьтикет` чтобы закрыть тикет")
+                await ctx.send(f"У вас уже открыт репорт, напишите {prefix}`закрытьтикет` чтобы закрыть тикет")
             else:
                 await ctx.message.delete()
-                await ctx.send("Тикет успешно создан!", delete_after=10)
+                await ctx.send("Репорт успешно создан!", delete_after=10)
 
                 creport = discord.utils.get(ctx.message.guild.categories, id=reportc)
-                channel = await guild.create_text_channel(f'тикет-{author}', overwrites=None, category=creport,
-                                                          reason=f'Создан тикет для {author}')
+                channel = await guild.create_text_channel(f'репорт-{author}', overwrites=None, category=creport,
+                                                          reason=f'Создан репорт для {author}')
 
                 await channel.set_permissions(authorTag, read_messages=True, send_messages=True)
 
@@ -441,7 +443,7 @@ class moderation(commands.Cog):
 
     @commands.command(
         aliases=['закрытьтикет', 'closeticket', 'закрыть', 'закрытьрепорт'],
-        description="Закрыть тикет")
+        description="Закрыть репорт")
     async def closetickets(self, ctx):
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]
@@ -465,7 +467,7 @@ class moderation(commands.Cog):
 
     @commands.command(
         aliases=['добавитьтикет', 'addticket', 'добавить', 'добавитьрепорт'],
-        description="Добавить кого-то в тикет")
+        description="Добавить кого-то в репорт")
     async def addtickets(self, ctx, member: discord.Member):
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]
