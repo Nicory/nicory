@@ -3,7 +3,6 @@ import config
 import pymongo
 import discord
 import asyncio
-import threading
 from colorama import Style, Fore
 
 
@@ -36,5 +35,8 @@ class Loop:
                 print(Fore.RED + "[ERROR] " + Style.RESET_ALL + f"Цикл MUTE_LOOP продолжает свою работу!")
 
     def activator(self):
-        p1 = threading.Thread(target=self.mute_loop, args=())
-        p1.start()
+        loop = asyncio.get_event_loop()
+
+        asyncio.ensure_future(self.mute_loop())
+
+        loop.run_forever()
