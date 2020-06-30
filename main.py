@@ -23,6 +23,7 @@ client = commands.Bot(command_prefix="#")
 client.remove_command("help")
 
 status = config.status
+Loop = Loop(client)
 Loop.activator()
 init()
 

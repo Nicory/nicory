@@ -4,12 +4,11 @@ import pymongo
 import discord
 import asyncio
 import threading
-from main import client
 from colorama import Style, Fore
 
 
 class Loop:
-    def __init__(self):
+    def __init__(self, client):
         self.bot = client
 
     def mute_loop(self):
