@@ -26,6 +26,8 @@ status = config.status
 Loop.activator()
 init()
 
+color=config.error_color
+
 @client.event
 async def on_ready():
     print(" ")
@@ -58,29 +60,29 @@ async def on_message(message):
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Команда не найдена!'))
+        return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Команда не найдена!', color=color))
     elif isinstance(error, commands.MissingPermissions):
-        return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, У бота недостаточно прав!\n'
-                                                              f'Если это не модераторская/музыкальная команда: то значит у бота нету права управлением сообщениями или права на установку реакций.'))
+        return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, У бота недостаточно прав!\n'
+                                                              f'Если это не модераторская команда: то значит у бота нету права управлением сообщениями или права на установку реакций.', color=color))
     elif isinstance(error, commands.MissingPermissions):
-        return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, У вас недостаточно прав!'))
+        return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, У вас недостаточно прав!', color=color))
     elif isinstance(error, commands.BadArgument):
         if "Member" in str(error):
-            return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Пользователь не найден!'))
+            return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Пользователь не найден!', color=color))
         if "Guild" in str(error):
-            return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Сервер не найден!'))
+            return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Сервер не найден!', color=color))
         else:
-            return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Введён неверный аргумент!'))
+            return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Введён неверный аргумент!', color=color))
     elif isinstance(error, commands.MissingRequiredArgument):
-        return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Пропущен аргумент с названием {error.param.name}!'))
+        return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Пропущен аргумент с названием {error.param.name}!', color=color))
     else:
         if "ValueError: invalid literal for int()" in str(error):
-            return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Укажите число а не строку!'))
+            return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Укажите число а не строку!', color=color))
         else:
             print(Fore.RED + f"[ERROR] " + Style.RESET_ALL + f"Команда: {ctx.message.content}")
             print(Fore.RED + f"[ERROR] " + Style.RESET_ALL + f"Сервер:  {ctx.message.guild}")
             print(Fore.RED + f"[ERROR] " + Style.RESET_ALL + f"Ошибка:  {error}")
-            await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, \n**`ERROR:`** {error}'))
+            await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, \n**`ERROR:`** {error}', color=color))
             raise error
 
 
