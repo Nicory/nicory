@@ -26,7 +26,7 @@ class Loop:
                             if member and guild:
                                 cursor[f"members_mute"].update({"guild": f"{guild.id}", "id": f"{member.id}"}, {'$set': {"mute": mute}})
                                 mute_role = discord.utils.get(guild.roles, name="Mute")
-                                await member.remove_roles(mute_role, reason="Снят Мьют Временем", atomic=True)
+                                asyncio.run(member.remove_roles(mute_role, reason="Снят Мьют Временем", atomic=True))
 
                 asyncio.run(asyncio.sleep(5))
 

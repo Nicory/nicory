@@ -7,6 +7,7 @@ import pymongo
 import asyncio
 import config
 
+
 # Код
 class moderation(commands.Cog):
     def __init__(self, bot):
@@ -111,8 +112,8 @@ class moderation(commands.Cog):
                 color=0x0c0c0c))
 
     @commands.command(
-    aliases=["Пред", "пред", "Варн", "варн", "Warn"],
-    description="Выдать предупреждение юзеру")
+        aliases=["Пред", "пред", "Варн", "варн", "Warn"],
+        description="Выдать предупреждение юзеру")
     @commands.has_permissions(kick_members=True)
     async def warn(self, ctx, member: discord.Member, *, arg):
 
