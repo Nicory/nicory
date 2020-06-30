@@ -7,6 +7,7 @@ import pymongo
 import asyncio
 import config
 
+
 # Код
 class moderation(commands.Cog):
     def __init__(self, bot):
@@ -37,18 +38,18 @@ class moderation(commands.Cog):
         times = time.time()
         times += timed
 
-        mute_role = discord.utils.get(ctx.message.guild.roles, name="Mute")
+        mute_role = discord.utils.get(ctx.message.guild.roles, name="RB_Muted")
 
         if not mute_role:
-            mute_role = await ctx.guild.create_role(name="Mute")
+            mute_role = await ctx.guild.create_role(name="RB_Muted")
 
         if mute_role in member.roles:
             await ctx.send(embed=discord.Embed(description=f'**:warning: Пользователь {member.mention} уже замьючен!**',
-                                               color=0x800080))
+                                               color=config.error_color))
         else:
             i = cursor.find_one({"guild": f"{ctx.guild.id}", "id": f"{member.id}"})
             if i is None:
-                cursor.insert_one({"guild": f"{guild.id}", "id": f"{member.id}", "mute": 0})
+                cursor.insert_one({"guild": f"{ctx.guild.id}", "id": f"{member.id}", "mute": 0})
 
             cursor.update({"guild": f"{ctx.guild.id}", "id": f"{member.id}"}, {'$set': {"mute": times}})
 
@@ -57,14 +58,14 @@ class moderation(commands.Cog):
                                    atomic=True)
             await ctx.send(
                 embed=discord.Embed(description=f'**:shield: Мьют пользователю {member.mention} успешно выдан!**',
-                                    color=0x0000FF))
+                                    color=config.color))
 
     @mute.error
     async def mute_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(embed=discord.Embed(
                 description=f'**:grey_exclamation: {ctx.author.name}, обязательно укажите юзера и время!**\n+мьют <юзер> <время> <тип времени>',
-                color=0x0c0c0c))
+                color=config.error_color))
 
     # Размьют
     @commands.command(
@@ -97,11 +98,11 @@ class moderation(commands.Cog):
             await member.remove_roles(mute_role)
             await ctx.send(embed=discord.Embed(
                 description=f'**:white_check_mark: Мьют у пользователя {member.mention} Успешно снят! **',
-                color=0x800080))
+                color=config.color))
         else:
             await ctx.send(
                 embed=discord.Embed(description=f'**:warning: Пользователь {member.mention} Не замьючен!**',
-                                    color=0x800080))
+                                    color=config.error_color))
 
     @unmute.error
     async def unmute_error(self, ctx, error):
@@ -111,8 +112,8 @@ class moderation(commands.Cog):
                 color=0x0c0c0c))
 
     @commands.command(
-    aliases=["Пред", "пред", "Варн", "варн", "Warn"],
-    description="Выдать предупреждение юзеру")
+        aliases=["Пред", "пред", "Варн", "варн", "Warn"],
+        description="Выдать предупреждение юзеру")
     @commands.has_permissions(kick_members=True)
     async def warn(self, ctx, member: discord.Member, *, arg):
 
@@ -307,7 +308,7 @@ class moderation(commands.Cog):
             return
 
         else:
-            logs_channel=self.bot.get_channel(int(logs_channel_id["channel_id"]))
+            logs_channel=self.bot.get_channel(int(logs_channel_id["channel"]))
             log_embed=discord.Embed(title="Участник был разбанен!", color=config.color)
             log_embed.add_field(name=f"Модератором {ctx.author.name}", value=f"", inline=False)
             await logs_channel.send(embed=log_embed)
@@ -381,6 +382,113 @@ class moderation(commands.Cog):
             await ctx.send(
                 embed=discord.Embed(description=f'❗️ {ctx.author.name},обязательно укажите юзера'))
 
+# <!-- Репорты -->
+    @commands.command(
+        aliases=["Тикет", "тикет", "репорт", "Репорт"],
+        description="Написать жалобу на юзера"    )
+    async def ticket(self, ctx):
+        conn = pymongo.MongoClient(config.MONGODB)
+        db = conn[f"RB_DB"]
+        cursor = db[f"guild_settings_reports"]
+        prefix = db["guild_settings_prefixes "].find_one({"guild": f"{ctx.guild.id}"})
+        if prefix is None:
+            prefix = "!!"
+        else:
+            prefix = prefix["prefix"]
+
+        author = ctx.message.author.name
+        author = author.lower()
+        author = author.replace(" ", "-")
+        guild = ctx.message.guild
+        authorTag = ctx.message.author
+
+        color = config.color  # Цвет полоски
+
+        ticketc = f'репорт-{author}'
+
+        reportc = cursor.find_one({"guild": f"{ctx.guild.id}"})["channel"]
+
+        if reportc == 0 or reportc is None:
+            await ctx.send(f"{ctx.author.mention}, администрация не указала канал для тикетов!")
+
+        else:
+            reportc = int(reportc)
+
+            llist = []
+            for i in ctx.message.guild.channels:
+                llist.append(i.name)
+
+            if ticketc in llist:
+                await ctx.send(f"У вас уже открыт репорт, напишите {prefix}`закрытьтикет` чтобы закрыть тикет")
+            else:
+                await ctx.message.delete()
+                await ctx.send("Репорт успешно создан!", delete_after=10)
+
+                creport = discord.utils.get(ctx.message.guild.categories, id=reportc)
+                channel = await guild.create_text_channel(f'репорт-{author}', overwrites=None, category=creport,
+                                                          reason=f'Создан репорт для {author}')
+
+                await channel.set_permissions(authorTag, read_messages=True, send_messages=True)
+
+                emb = discord.Embed(title=f"Тикет Пользователя {authorTag.display_name}",
+                                    description="Здравствуйте! \n Для решения Вашей проблемы мы создали отдельный чат "
+                                                "с модерацией сервера! \n \n Опишите Вашу проблему полностью и "
+                                                "развёрнуто и модерация сервера ответит Вам. \n \n Старайтесь "
+                                                "описывать проблему доступным для понимания текстом.",
+                                    color=color)
+                emb.add_field(name="Закрыть тикет", value=f"`{prefix}закрытьтикет`")
+                emb.add_field(name="Добавить пользователя в тикет", value=f"`{prefix}добавитьтикет`")
+                emb.set_footer(text=config.copy, icon_url=config.icon)
+
+                await channel.send(authorTag.mention)
+                await channel.send(embed=emb)
+
+    @commands.command(
+        aliases=['закрытьтикет', 'closeticket', 'закрыть', 'закрытьрепорт'],
+        description="Закрыть репорт")
+    async def closetickets(self, ctx):
+        conn = pymongo.MongoClient(config.MONGODB)
+        db = conn[f"RB_DB"]
+        cursor = db[f"guild_settings_reports"]
+        reportc = cursor.find_one({"guild": f"{ctx.guild.id}"})["channel"]
+
+        author = ctx.message.author.name
+        author = author.lower()
+        author = author.replace(" ", "-")
+
+        if ctx.message.channel.category.id == int(reportc):
+            await ctx.message.channel.delete(
+                reason=f'Тикет закрыть пользователем - {ctx.message.author.display_name} ({ctx.author.name} {ctx.author.discriminator})')
+
+        else:
+            if ctx.message.channel.name == f"тикет-{author}":
+                await ctx.message.channel.delete(
+                    reason=f'Тикет закрыть пользователем - {ctx.message.author.display_name} ({ctx.author.name} {ctx.author.discriminator})')
+            else:
+                await ctx.send("Эта команда работает только в тикете!")
+
+    @commands.command(
+        aliases=['добавитьтикет', 'addticket', 'добавить', 'добавитьрепорт'],
+        description="Добавить кого-то в репорт")
+    async def addtickets(self, ctx, member: discord.Member):
+        conn = pymongo.MongoClient(config.MONGODB)
+        db = conn[f"RB_DB"]
+        cursor = db[f"guild_settings_reports"]
+        reportc = cursor.find_one({"guild": f"{ctx.guild.id}"})["channel"]
+
+        author = ctx.message.author.name
+        author = author.lower()
+        author = author.replace(" ", "-")
+
+        if ctx.message.channel.category.id == int(reportc):
+            await ctx.channel.set_permissions(member, read_messages=True, send_messages=True)
+            await ctx.send(f"{member.mention} успешно добавлен в тикет!")
+        else:
+            if ctx.message.channel.name == f"тикет-{author}":
+                await ctx.channel.set_permissions(member, read_messages=True, send_messages=True)
+                await ctx.send(f"{member.mention} успешно добавлен в тикет!")
+            else:
+                await ctx.send("Эта команда работает только в тикете!")
 
 
 def setup(client):

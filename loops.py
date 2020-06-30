@@ -3,7 +3,6 @@ import config
 import pymongo
 import discord
 import asyncio
-import threading
 from colorama import Style, Fore
 
 
@@ -11,7 +10,7 @@ class Loop:
     def __init__(self, client):
         self.bot = client
 
-    def mute_loop(self):
+    async def mute_loop(self):
         while True:
             try:
                 conn = pymongo.MongoClient(config.MONGODB)
@@ -28,13 +27,16 @@ class Loop:
                                 mute_role = discord.utils.get(guild.roles, name="Mute")
                                 await member.remove_roles(mute_role, reason="Снят Мьют Временем", atomic=True)
 
-                asyncio.run(asyncio.sleep(5))
+                await asyncio.sleep(5)
 
             except Exception as e:
                 print(Fore.RED + "[ERROR] " + Style.RESET_ALL + f"В цикле MUTE_LOOP произошла следующая ошибка:")
-                print(Fore.RED + "[ERROR] " + Style.RESET_ALL + f"{e}")
+                print(Fore.RED + "[ERROR] " + Style.RESET_ALL + f"\n{e}")
                 print(Fore.RED + "[ERROR] " + Style.RESET_ALL + f"Цикл MUTE_LOOP продолжает свою работу!")
 
     def activator(self):
-        p1 = threading.Thread(target=self.mute_loop, args=())
-        p1.start()
+        loop = asyncio.get_event_loop()
+
+        asyncio.ensure_future(self.mute_loop())
+
+        loop.run_forever()

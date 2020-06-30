@@ -8,22 +8,26 @@
 # Импорт библиотек
 import asyncio
 import time
+from loops import Loop
 
 import discord
 import config
 import os
 import pymongo
 
-from colorama import Fore, Back, Style  # Цветная консоль
+from colorama import Fore, Style  # Цветная консоль
 from colorama import init  # Цветная консоль
 from discord.ext import commands
-
-status = config.status
-init()
 
 client = commands.Bot(command_prefix="#")
 client.remove_command("help")
 
+status = config.status
+Loop = Loop(client)
+Loop.activator()
+init()
+
+color=config.error_color
 
 @client.event
 async def on_ready():
@@ -45,10 +49,43 @@ async def on_ready():
     print(" ")
 
 
-for file in os.listdir("./Modules"):
-    if file.endswith(".py"):
-        client.load_extension(f'Modules.{file[:-3]}')
-        print(Fore.YELLOW + "[RB Log] " + Style.RESET_ALL + f"Module loaded - {file[:-3]}")
+@client.event
+async def on_message(message):
+    if message.guild:
+        mute_role = discord.utils.get(message.guild.roles, name="RB_Muted")
+        if mute_role in message.author.roles:
+            await message.delete()
+        else:
+            await client.process_commands(message)
+
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Команда не найдена!', color=color))
+    elif isinstance(error, commands.MissingPermissions):
+        return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, У бота недостаточно прав!\n'
+                                                              f'Если это не модераторская команда: то значит у бота нету права управлением сообщениями или права на установку реакций.', color=color))
+    elif isinstance(error, commands.MissingPermissions):
+        return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, У вас недостаточно прав!', color=color))
+    elif isinstance(error, commands.BadArgument):
+        if "Member" in str(error):
+            return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Пользователь не найден!', color=color))
+        if "Guild" in str(error):
+            return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Сервер не найден!', color=color))
+        else:
+            return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Введён неверный аргумент!', color=color))
+    elif isinstance(error, commands.MissingRequiredArgument):
+        return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Пропущен аргумент с названием {error.param.name}!', color=color))
+    else:
+        if "ValueError: invalid literal for int()" in str(error):
+            return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Укажите число а не строку!', color=color))
+        else:
+            print(Fore.RED + f"[ERROR] " + Style.RESET_ALL + f"Команда: {ctx.message.content}")
+            print(Fore.RED + f"[ERROR] " + Style.RESET_ALL + f"Сервер:  {ctx.message.guild}")
+            print(Fore.RED + f"[ERROR] " + Style.RESET_ALL + f"Ошибка:  {error}")
+            await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, \n**`ERROR:`** {error}', color=color))
+            raise error
 
 
 # LUR Система
@@ -76,5 +113,12 @@ async def reload(ctx, extension):
     client.reload_extension(f'Modules.{extension}')
     print(Fore.YELLOW + "[RB Log] " + Style.RESET_ALL + f"Перезагружен модуль - {extension}")
     await ctx.send(f"Модуль **{extension}** успешно перезагружен!")
+
+
+for file in os.listdir("./Modules"):
+    if file.endswith(".py"):
+        client.load_extension(f'Modules.{file[:-3]}')
+        print(Fore.YELLOW + "[RB Log] " + Style.RESET_ALL + f"Module loaded - {file[:-3]}")
+
 
 client.run(config.TOKEN)
