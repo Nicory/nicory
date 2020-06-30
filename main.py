@@ -51,11 +51,12 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    mute_role = discord.utils.get(message.guild.roles, name="RB_Muted")
-    if mute_role in message.author.roles:
-        await message.delete()
-    else:
-        await client.process_commands(message)
+    if message.guild:
+        mute_role = discord.utils.get(message.guild.roles, name="RB_Muted")
+        if mute_role in message.author.roles:
+            await message.delete()
+        else:
+            await client.process_commands(message)
 
 
 @client.event

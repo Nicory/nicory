@@ -390,9 +390,11 @@ class moderation(commands.Cog):
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]
         cursor = db[f"guild_settings_reports"]
-        prefix = db["guild_settings_prefixes "].find_one({"guild": f"{ctx.guild.id}"})["prefix"]
+        prefix = db["guild_settings_prefixes "].find_one({"guild": f"{ctx.guild.id}"})
         if prefix is None:
             prefix = "!!"
+        else:
+            prefix = prefix["prefix"]
 
         author = ctx.message.author.name
         author = author.lower()
