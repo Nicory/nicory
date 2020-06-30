@@ -19,13 +19,12 @@ from colorama import Fore, Style  # Цветная консоль
 from colorama import init  # Цветная консоль
 from discord.ext import commands
 
-status = config.status
-Loop.activator()
-init()
-
 client = commands.Bot(command_prefix="#")
 client.remove_command("help")
 
+status = config.status
+Loop.activator()
+init()
 
 @client.event
 async def on_ready():
@@ -66,9 +65,14 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.MissingPermissions):
         return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, У вас недостаточно прав!'))
     elif isinstance(error, commands.BadArgument):
-        return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Указанный аргумент не найден!'))
+        if "Member" in str(error):
+            return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Пользователь не найден!'))
+        if "Guild" in str(error):
+            return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Сервер не найден!'))
+        else:
+            return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Введён неверный аргумент!'))
     elif isinstance(error, commands.MissingRequiredArgument):
-        return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Пропущен требуемый аргумент!'))
+        return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Пропущен аргумент с названием {error.param.name}!'))
     else:
         if "ValueError: invalid literal for int()" in str(error):
             return await ctx.send(embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name}, Укажите число а не строку!'))
