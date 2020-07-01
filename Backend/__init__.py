@@ -1,6 +1,7 @@
 from flask import Flask
 from discord.ext import commands
 import config
+import threading
 
 class RinokuBackend(commands.Cog):
   def __init__(self, bot):
@@ -13,4 +14,6 @@ class RinokuBackend(commands.Cog):
     def main():
       return "test"
 
-    self.app.run(port=config.api_port)
+
+    thread1 = threading.Thread(target= self.app.run)
+    thread1.start()
