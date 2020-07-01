@@ -52,11 +52,13 @@ mccabe==0.6.1
 meson==0.53.2
 more-itertools==4.2.0
 multidict==4.7.6
+nest-asyncio==1.3.3
 netifaces==0.10.4
 oauthlib==3.1.0
 olefile==0.46
 Paginator==0.5.1
 parso==0.7.0
+pbr==5.4.5
 pexpect==4.6.0
 Pillow==7.1.2
 pluggy==0.13.1
@@ -93,6 +95,7 @@ simplejson==3.16.0
 six==1.15.0
 snowballstemmer==2.0.0
 systemd-python==234
+testresources==2.0.1
 texttable==1.6.2
 toml==0.10.1
 ubuntu-advantage-tools==20.3

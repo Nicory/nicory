@@ -14,6 +14,8 @@ import discord
 import config
 import os
 import pymongo
+import nest_asyncio # фикс asyncio для запуска нескольких хуевин
+nest_asyncio.apply() # фикс asyncio для запуска нескольких хуевин
 
 from colorama import Fore, Style  # Цветная консоль
 from colorama import init  # Цветная консоль
@@ -23,8 +25,8 @@ client = commands.Bot(command_prefix="#")
 client.remove_command("help")
 
 status = config.status
-Loop = Loop(client)
-Loop.activator()
+
+
 init()
 
 color=config.error_color
@@ -47,6 +49,11 @@ async def on_ready():
     print(f'  Bot Id   - {client.user.id}  ')
     print(Fore.CYAN + "===================================" + Style.RESET_ALL)
     print(" ")
+
+    loop = Loop(client)
+    await loop.activator()
+
+
 
 
 @client.event
