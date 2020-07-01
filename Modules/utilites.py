@@ -115,8 +115,7 @@ class utilites(commands.Cog):
             cursor.update_one({"guild": ctx.guild.id}, {"$set": {f'cmd_{name}': False}})
 
         else:
-            cursor.insert_one({"guild": ctx.guild.id}, {
-                              "$set": {ctx.command.name: False}})
+            cursor.insert_one({"guild": ctx.guild.id, f'cmd_{name}': False})
 
         await ctx.send(f"Команда `{name}` успешно отключена!")
 
@@ -149,8 +148,7 @@ class utilites(commands.Cog):
                               "$set": {f'cmd_{name}': True}})
 
         else:
-            cursor.insert_one({"guild": ctx.guild.id}, {
-                              "$set": {ctx.command.name: True}})
+            cursor.insert_one({"guild": ctx.guild.id, f'cmd_{name}': True})
 
         await ctx.send(f"Команда `{name}` успешно включена!")
 
