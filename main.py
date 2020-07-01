@@ -25,8 +25,6 @@ client = commands.Bot(command_prefix="#")
 client.remove_command("help")
 
 status = config.status
-
-
 init()
 
 color=config.error_color
@@ -51,7 +49,10 @@ async def on_ready():
     print(" ")
 
     loop = Loop(client)
-    await loop.activator()
+    try:
+        await loop.activator()
+    except AssertionError:
+        pass
 
 
 
@@ -61,9 +62,13 @@ async def on_message(message):
     if message.guild:
         mute_role = discord.utils.get(message.guild.roles, name="RB_Muted")
         if mute_role in message.author.roles:
-            await message.delete()
+            if mute_role not in message.author.roles:
+                pass
+            else:
+                await message.delete()
         else:
             await client.process_commands(message)
+
 
 
 @client.event
