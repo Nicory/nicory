@@ -88,6 +88,50 @@ class utilites(commands.Cog):
 
         await ctx.send(f"Настройка успешна!")
 
+    @commands.command(
+        alises=["отключить"],
+        description="Отключить команду")
+    @commands.has_permissions(administrator=True)
+    async def disable(self, ctx, name: str):
+        if name == "enable" or name == "disable":
+            return ctx.send("Эти команды нельзя отключить!")
+
+        # Конект БД
+        conn = pymongo.MongoClient(config.MONGODB)
+        db = conn[f"RB_DB"]  # Подключаемся к нужно БД
+        # Подключаемся к нужной колекции в нужной бд
+        cursor = db[f"commands_permissions"]
+
+        if cursor.find_one({"guild": ctx.guild.id}):
+            cursor.update_one({"guild": ctx.guild.id}, {"$set": {f'cmd_{name}': False}})
+
+        else:
+            cursor.insert_one({"guild": ctx.guild.id}, {
+                              "$set": {ctx.command.name: False}})
+
+        await ctx.send(f"Команда `{name}` успешно отключена!")
+
+    @commands.command(
+        alises=["включить"],
+        description="Включить команду")
+    @commands.has_permissions(administrator=True)
+    async def enable(self, ctx, name: str):
+        # Конект БД
+        conn = pymongo.MongoClient(config.MONGODB)
+        db = conn[f"RB_DB"]  # Подключаемся к нужно БД
+        # Подключаемся к нужной колекции в нужной бд
+        cursor = db[f"commands_permissions"]
+
+        if cursor.find_one({"guild": ctx.guild.id}):
+            cursor.update_one({"guild": ctx.guild.id}, {
+                              "$set": {f'cmd_{name}': True}})
+
+        else:
+            cursor.insert_one({"guild": ctx.guild.id}, {
+                              "$set": {ctx.command.name: True}})
+
+        await ctx.send(f"Команда `{name}` успешно включена!")
+
 
 def setup(client):
     client.add_cog(utilites(client))

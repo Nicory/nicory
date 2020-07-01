@@ -23,6 +23,14 @@ from colorama import Fore, Style  # Цветная консоль
 from colorama import init  # Цветная консоль
 from discord.ext import commands
 
+
+class NoPermission(commands.errors.CommandError):
+    pass
+
+
+class CommandDisabled(commands.errors.CommandError):
+    pass
+
 client = commands.AutoShardedBot(command_prefix="#")
 client.remove_command("help")
 
@@ -50,11 +58,13 @@ async def on_ready():
     print(Fore.CYAN + "===================================" + Style.RESET_ALL)
     print(" ")
 
-    loop = Loop(client)
-    try:
-        await loop.activator()
-    except AssertionError:
-        pass
+loop = Loop(client)
+try:
+    loop.activator()
+except AssertionError:
+    pass
+
+client.add_cog(RinokuBackend(client))
 
 
 
@@ -80,7 +90,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.MissingPermissions):
         return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, У бота недостаточно прав!\n'
                                                               f'Если это не модераторская команда: то значит у бота нету права управлением сообщениями или права на установку реакций.', color=color))
-    elif isinstance(error, commands.MissingPermissions):
+    elif isinstance(error, commands.MissingPermissions) or isinstance(error, NoPermission):
         return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, У вас недостаточно прав!', color=color))
     elif isinstance(error, commands.BadArgument):
         if "Member" in str(error):
@@ -91,6 +101,8 @@ async def on_command_error(ctx, error):
             return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Введён неверный аргумент!', color=color))
     elif isinstance(error, commands.MissingRequiredArgument):
         return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Пропущен аргумент с названием {error.param.name}!', color=color))
+    elif isinstance(error, CommandDisabled):
+        return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, эта команда отключена!', color=color))
     else:
         if "ValueError: invalid literal for int()" in str(error):
             return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Укажите число а не строку!', color=color))
@@ -134,7 +146,19 @@ for file in os.listdir("./Modules"):
         client.load_extension(f'Modules.{file[:-3]}')
         print(Fore.YELLOW + "[RB Log] " + Style.RESET_ALL + f"Module loaded - {file[:-3]}")
 
-client.add_cog(RinokuBackend(client))
 
+
+
+@client.check
+async def permission_check(ctx):
+    conn = pymongo.MongoClient(config.MONGODB)
+    db = conn[f"RB_DB"]  # Подключаемся к нужно БД
+    # Подключаемся к нужной колекции в нужной бд
+    cursor = db[f"commands_permissions"]
+
+    if cursor.find_one({"guild": ctx.guild.id, f'cmd_{ctx.command.name}': False}):
+        raise CommandDisabled()
+    else:
+        return True
 
 client.run(config.TOKEN)
