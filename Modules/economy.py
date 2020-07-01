@@ -281,7 +281,7 @@ class economy(commands.Cog):
             if ctx.guild.get_role(i['role_id']) is not None:
                 embed.add_field(
                     name=f"Роль {ctx.guild.get_role(i['role_id'])}",
-                    value=f"Стоимость: {i['cost']} кредитов",
+                    value=f"Стоимость: {i['cost']} кредитов\n[{ctx.guild.get_role(i['role_id']).mention}]",
                     inline=False
                 )
 
@@ -333,7 +333,39 @@ class economy(commands.Cog):
                 await ctx.author.add_roles(role)
                 await ctx.message.add_reaction('✅')
                 mount = money - cost
-                cursor_m.update_one({"m_id": f"{ctx.author.id}"}, {'$set': {"money": mount}})
+                cursor_m.update_one({"m_id": f"{ctx.author.id}"}, {"guild:": f"{ctx.guild.id}"}, {'$set': {"money": mount}})
+
+    @commands.command(
+        aliases=[
+            "sell",
+            "продать"
+        ],
+        description="Купить Товар"
+    )
+    async def __sell(self, ctx, role: discord.Role = None):
+
+        conn = pymongo.MongoClient(config.MONGODB)
+        db = conn[f"RB_DB"]  # Подключаемся к нужно БД
+        cursor_s = db[f"shop"]  # Подключаемся к нужной колекции в нужной бд
+        cursor_m = db[f"economy"]
+
+        c = cursor_s.find_one({"guild": ctx.guild.id, "role_id": role.id})
+        m = cursor_m.find_one({"guild": f"{ctx.guild.id}", "m_id": f"{ctx.author.id}"})
+        cost = c['cost']
+
+        money = m['money']
+
+        if role is None:
+            return await ctx.send(f"{ctx.author.mention}, укажите роль которую хотите купить.")
+        else:
+            if role not in ctx.author.roles:
+                return await ctx.send(f"{ctx.author.mention}, у вас нету данной роли.")
+
+            else:
+                await ctx.author.add_roles(role)
+                await ctx.message.add_reaction('✅')
+                mount = money + cost
+                cursor_m.update_one({"m_id": f"{ctx.author.id}"}, {"guild:": f"{ctx.guild.id}"}, {'$set': {"money": mount}})
 
     @commands.command(
         aliases=[
@@ -405,7 +437,7 @@ class economy(commands.Cog):
         )
 
         mount = mon["money"] + m
-        cursor.update_one({"m_id": f"{ctx.author.id}"}, {'$set': {"money": mount}})
+        cursor.update_one({"m_id": f"{ctx.author.id}"}, {"guild": f"{ctx.guild.id}"}, {'$set': {"money": mount}})
 
         e = discord.Embed(
             description=f"{ctx.author.mention} работает на работе `{arg}`, и зарабатывает **{m}** кредита(ов)!",
