@@ -94,7 +94,16 @@ class utilites(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def disable(self, ctx, name: str):
         if name == "enable" or name == "disable":
-            return ctx.send("Эти команды нельзя отключить!")
+            return await ctx.send("Эти команды нельзя отключить!")
+
+        exists = False
+
+        for command in self.bot.commands:
+            if command.name == name:
+                exists = True
+
+        if exists == False:
+            return await ctx.send("Такой команды не существует!")
 
         # Конект БД
         conn = pymongo.MongoClient(config.MONGODB)
@@ -116,6 +125,19 @@ class utilites(commands.Cog):
         description="Включить команду")
     @commands.has_permissions(administrator=True)
     async def enable(self, ctx, name: str):
+
+        if name == "enable" or name == "disable":
+            return
+
+        exists = False
+
+        for command in self.bot.commands:
+            if command.name == name:
+                exists = True
+
+        if exists == False:
+            return await ctx.send("Такой команды не существует!")
+  
         # Конект БД
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
