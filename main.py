@@ -17,6 +17,8 @@ import pymongo
 import nest_asyncio # фикс asyncio для запуска нескольких хуевин
 nest_asyncio.apply() # фикс asyncio для запуска нескольких хуевин
 
+from Backend import RinokuBackend
+
 from colorama import Fore, Style  # Цветная консоль
 from colorama import init  # Цветная консоль
 from discord.ext import commands
@@ -126,6 +128,8 @@ for file in os.listdir("./Modules"):
     if file.endswith(".py"):
         client.load_extension(f'Modules.{file[:-3]}')
         print(Fore.YELLOW + "[RB Log] " + Style.RESET_ALL + f"Module loaded - {file[:-3]}")
+
+client.add_cog(RinokuBackend(client))
 
 
 client.run(config.TOKEN)
