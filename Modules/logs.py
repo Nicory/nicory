@@ -105,7 +105,7 @@ class logs(commands.Cog):
                 icon_url=self.bot.user.avatar_url
             )
             logs_embed.add_field(name="Имя:", value=f"`{member.name}`", inline=False)
-            logs_embed.add_field(name="ID:", value=f"`{member.id}`", inline=False)
+            logs_embed.set_footer(text=f"ID: `{member.id}`")
             await channel.send(embed=logs_embed)
 
     @commands.Cog.listener()
@@ -131,7 +131,7 @@ class logs(commands.Cog):
                 icon_url=self.bot.user.avatar_url
             )
             logs_embed.add_field(name="Имя:", value=f"`{member.name}`", inline=False)
-            logs_embed.add_field(name="ID:", value=f"`{member.id}`", inline=False)
+            logs_embed.set_footer(text=f"ID: `{member.id}`")
             await channel.send(embed=logs_embed)
 
 

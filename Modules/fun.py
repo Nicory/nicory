@@ -107,12 +107,6 @@ class Fun(commands.Cog):
 
         await ctx.send(embed=swat_embed)
 
-    @police.error
-    async def police_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                embed=discord.Embed(description=f'**:grey_exclamation: {ctx.author.name},обязательно укажите юзера!.**',
-                                    color=0x0c0c0c))
 
     @commands.command(
         aliases=[
@@ -146,12 +140,6 @@ class Fun(commands.Cog):
 
             await ctx.send(embed=caress_embed)
 
-    @caress.error
-    async def caress_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(
-                embed=discord.Embed(description=f'**:grey_exclamation: {ctx.author.name},обязательно укажите юзера!.**',
-                                    color=0x0c0c0c))
 
 
 
