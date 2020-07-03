@@ -132,6 +132,7 @@ class moderation(commands.Cog):
         if not max_warns:
             pass
 
+        ids = 0
         for i in cursor.find({"guild": f"{ctx.message.guild.id}"}).sort("id", -1):
             if not i["id"]:
                 ids = 1
