@@ -41,6 +41,15 @@ class Main(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             await ctx.message.add_reaction('❌')
 
+    @commands.command(hidden=True)
+    async def eval(self, ctx, *, cmd):
+        if str(ctx.author.id) in config.owners:
+            result = ""
+            result = eval(cmd)
+            await ctx.send(result)
+        else:
+            await ctx.send("you are gay")
+
 
 def setup(client):
     client.add_cog(Main(client))
