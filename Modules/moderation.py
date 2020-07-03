@@ -19,7 +19,7 @@ class moderation(commands.Cog):
         aliases=["мьют", "мут", "Мут", "Мьют", "Mute"],
         description="Дать мьют пользователю")
     @commands.has_permissions(manage_messages=True)
-    async def mute(self, ctx, member: discord.Member, timenumber: int, typetime):
+    async def mute(self, ctx, member: discord.Member, timenumber: int, typetime, *, reason):
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"members_mute"]  # Подключаемся к нужной колекции в нужной бд
@@ -54,17 +54,17 @@ class moderation(commands.Cog):
             cursor.update({"guild": f"{ctx.guild.id}", "id": f"{member.id}"}, {'$set': {"mute": times}})
 
             await member.add_roles(mute_role,
-                                   reason=f"Пользователь {ctx.author.display_name} выдал мьют на {timenumber} {typetime}",
+                                   reason=f"Пользователь {ctx.author.display_name} выдал мьют на {timenumber} {typetime} по причине {reason}",
                                    atomic=True)
             await ctx.send(
-                embed=discord.Embed(description=f'**:shield: Мьют пользователю {member.mention} успешно выдан!**',
+                embed=discord.Embed(description=f'**:shield: Мьют пользователю {member.mention} успешно выдан по причине {reason}!**',
                                     color=config.color))
 
     @mute.error
     async def mute_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(embed=discord.Embed(
-                description=f'**:grey_exclamation: {ctx.author.name}, обязательно укажите юзера и время!**\n+мьют <юзер> <время> <тип времени>',
+                description=f'**:grey_exclamation: {ctx.author.name}, обязательно укажите юзера и время!**\n!!мьют <юзер> <время> <тип времени>',
                 color=config.error_color))
 
     # Размьют
@@ -173,9 +173,6 @@ class moderation(commands.Cog):
 
                 await ctx.send(embed=warn_embed)
                 await member.send(embed=warn_embed_d)
-
-        cursor.insert_one(
-            {"id": ids, "guild": f"{ctx.message.guild.id}", "member": f"{member.id}", "moderator": f"{ctx.author.id}","reason": f"{arg}"})
 
         await ctx.send(f"Предупреждение пользователю {member.display_name} с причиной {arg} успешно выдано! (ID предупреждения - `{ids}`)")
 
@@ -352,10 +349,6 @@ class moderation(commands.Cog):
         db = conn[f"RB_DB"]
         cursor = db[f"guild_settings_logs"]
 
-        # logs_channel_id = cursor.find_one({"guild_id": f"{ctx.guild.id}"})
-        # if not logs_channel_id:
-        #    return
-
         if member == ctx.message.author:
             return await ctx.send("Ты не можешь кикнуть сам себя.")
 
@@ -367,11 +360,7 @@ class moderation(commands.Cog):
             msgg = f'Пользователь : {member.mention}, кикнут.'
             reason = "Не указанна"
 
-        # log_embed=discord.Embed(title="Участник был кикнут!", color=config.color)
-        # log_embed.add_field(name=f"Модератор: {ctx.author.name}", value=f"По причине `{reason}`", inline=False)
-
         await member.kick(reason=f"[RB]: Модератор {ctx.author.name}, по причине {reason}")
-        # await logs_channel.send(embed=log_embed)
         await ctx.send(msgg)
         await member.send(msgdm)
 

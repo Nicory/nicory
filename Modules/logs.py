@@ -49,7 +49,6 @@ class logs(commands.Cog):
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
         # Конект БД
-        global id
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"guild_settings_logs"]  # Подключаемся к нужной колекции в нужной бд
@@ -106,13 +105,12 @@ class logs(commands.Cog):
                 icon_url=self.bot.user.avatar_url
             )
             logs_embed.add_field(name="Имя:", value=f"`{member.name}`", inline=False)
-            logs_embed.add_field(name="ID:", value=f"`{member.id}`", inline=False)
+            logs_embed.set_footer(text=f"ID: `{member.id}`")
             await channel.send(embed=logs_embed)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
         # Конект БД
-        global id
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"guild_settings_logs"]  # Подключаемся к нужной колекции в нужной бд
@@ -133,7 +131,7 @@ class logs(commands.Cog):
                 icon_url=self.bot.user.avatar_url
             )
             logs_embed.add_field(name="Имя:", value=f"`{member.name}`", inline=False)
-            logs_embed.add_field(name="ID:", value=f"`{member.id}`", inline=False)
+            logs_embed.set_footer(text=f"ID: `{member.id}`")
             await channel.send(embed=logs_embed)
 
 
