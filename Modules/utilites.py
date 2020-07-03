@@ -136,7 +136,7 @@ class utilites(commands.Cog):
 
         if exists == False:
             return await ctx.send("Такой команды не существует!")
-  
+
         # Конект БД
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -152,6 +152,97 @@ class utilites(commands.Cog):
 
         await ctx.send(f"Команда `{name}` успешно включена!")
 
+
+    # userinfo
+    @commands.command(
+        aliases=["Юзеринфо", "юзеринфо", "юзер", "Юзер", "User", "user", "Userinfo"]
+    )
+    async def userinfo(self, ctx, Member: discord.Member = None):
+
+        conn = pymongo.MongoClient(config.MONGODB)
+        db = conn[f"RB_DB"]  # Подключаемся к нужно БД
+        cursor = db[f"economy"]  # Подключаемся к экономике
+        cursor_moder = db[f"warns"]  # Подключаемся к варнам
+
+        if not Member:
+            Member = ctx.author
+
+        check_warns = cursor_moder.find(
+            {
+                "guild": f"{ctx.guild.id}",
+                "member": f"{Member.id}"
+            }
+        )
+
+        warns = check_warns.count()
+
+        if not warns:
+            warns = 0
+
+        bal = cursor.find_one(
+            {
+                "guild": f"{ctx.guild.id}",
+                "m_id": f"{Member.id}"
+            }
+        )
+
+        img = Image.new("RGBA", (920, 230), (0, 0, 0, 0))
+        url = str(Member.avatar_url)[:-10]
+
+        response = requests.get(url, stream=True)
+        response = Image.open(io.BytesIO(response.content))
+        response = response.convert('RGBA')
+        response = response.resize((220, 220), Image.ANTIALIAS)
+        img.paste(response, (5, 5, 225, 225))
+
+        # создание изображения на основе картинки из файла PSD
+        path = 'card/card.png'
+        banner = Image.open(path)
+        banner = banner.convert('RGBA')
+        img.paste(banner, (0, 0, 920, 230), banner)
+
+        idraw = ImageDraw.Draw(img)
+        name = Member.display_name
+        tag = Member.discriminator
+
+        headline = ImageFont.truetype("arial.ttf", size=55)
+        maintext = ImageFont.truetype("card/andromeda.ttf", size=30)
+        roletext = ImageFont.truetype("card/andromeda.ttf", size=45)
+        undertext = ImageFont.truetype("card/andromeda.ttf", size=12)
+
+        idraw.text((230, 37), f'{name}#{tag}', font=headline, fill='#f480ff')
+        idraw.text((328, 105), f'{Member.id}', font=maintext)
+        idraw.text((685, 78), f"{bal['money']} §", font=roletext)
+        idraw.text((685, 115), f"{Member.status}", font=roletext)
+        idraw.text((685, 165), f"{warns}", font=roletext)
+        img.save('user_card.png')
+        await ctx.send(file=discord.File(fp='user_card.png'))
+
+
+    @commands.command()
+    async def server(self, ctx):
+        members = ctx.guild.members
+        online = len(list(filter(lambda x: x.status == discord.Status.online, members)))
+        offline = len(list(filter(lambda x: x.status == discord.Status.offline, members)))
+        idle = len(list(filter(lambda x: x.status == discord.Status.idle, members)))
+        dnd = len(list(filter(lambda x: x.status == discord.Status.dnd, members)))
+        allchannels = len(ctx.guild.channels)
+        allvoice = len(ctx.guild.voice_channels)
+        alltext = len(ctx.guild.text_channels)
+        allroles = len(ctx.guild.roles)
+        embed=discord.Embed(
+            title=f"{ctx.guild.name}",
+            color=config.color
+        )
+        embed.add_field(name=f"Участники [{ctx.guild.member_count}]",
+                        value=f"<:bot:728682548347011203>Ботов: **{len([m for m in members if m.bot])}**\n<:online:728682549819473970> Онлайн: **{online}**\n<:offline:728682548280033281> Офлайн: **{offline}** \n <:idle:728682549890515094> Отошли: **{idle}** \n<:dnd:728682911057838140>Не беспокоить: **{dnd}** \n",
+                        inline=True)
+        embed.add_field(name=f"Общее количество каналов [{allchannels}]", value=f"Текстовых каналов: {alltext}\nГолосовых каналов: {allvoice}", inline=True)
+        embed.add_field(name="Создатель сервера", value=f"{ctx.guild.owner}", inline=False)
+        embed.add_field(name=f"Информация о сервере", value=f"Сервер создан {ctx.guild.created_at.strftime('%A, %b %#d %Y')}\nРегион {ctx.guild.region}", inline=False)
+        embed.set_footer(text=f"ID: {ctx.guild.id}", icon_url=ctx.guild.icon_url)
+        embed.set_thumbnail(url=ctx.guild.icon_url)
+        await ctx.send(embed=embed)
 
 def setup(client):
     client.add_cog(utilites(client))
