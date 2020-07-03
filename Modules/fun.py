@@ -66,7 +66,7 @@ class Fun(commands.Cog):
         await ctx.send(embed=cry_embed)
 
 
-@commands.command(
+    @commands.command(
         aliases=[
             "Полиция",
             "полиция",

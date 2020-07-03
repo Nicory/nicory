@@ -26,23 +26,19 @@ class economy(commands.Cog):
                     "m_id": f"{message.author.id}"
                 }
             )
+            if not user:
+                cursor.insert_one(
+                    {
+                        "guild": f"{message.guild.id}",
+                        "m_id": f"{message.author.id}",
+                        "m_name": f"{message.author.name}",
+                        "money": 0
+                    }
+                )
         else:
             return
 
         if message.author.id == self.bot.user.id:
-            return
-
-        if not user:
-            cursor.insert_one(
-                {
-                    "guild": f"{message.guild.id}",
-                    "m_id": f"{message.author.id}",
-                    "m_name": f"{message.author.name}",
-                    "money": 0
-                }
-            )
-
-        else:
             return
 
     @commands.command(
