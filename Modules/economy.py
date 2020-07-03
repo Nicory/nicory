@@ -19,15 +19,18 @@ class economy(commands.Cog):
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"members_economy"]  # Подключаемся к нужной колекции в нужной бд
 
-        if message.author.id == self.bot.user.id:
+        if message.guild:  # Проверка на сервере ли это
+            user = cursor.find_one(
+                {
+                    "guild": f"{message.guild.id}",
+                    "m_id": f"{message.author.id}"
+                }
+            )
+        else:
             return
 
-        user = cursor.find_one(
-            {
-                "guild": f"{message.guild.id}",
-                "m_id": f"{message.author.id}"
-            }
-        )
+        if message.author.id == self.bot.user.id:
+            return
 
         if not user:
             cursor.insert_one(
@@ -365,7 +368,7 @@ class economy(commands.Cog):
                 await ctx.author.add_roles(role)
                 await ctx.message.add_reaction('✅')
                 mount = money + cost
-                cursor_m.update_one({"m_id": f"{ctx.author.id}"}, {"guild:": f"{ctx.guild.id}"}, {'$set': {"money": mount}})
+                cursor_m.update_one({"m_id": f"{ctx.author.id}", "guild:": f"{ctx.guild.id}"}, {'$set': {"money": mount}})
 
     @commands.command(
         aliases=[
@@ -387,18 +390,18 @@ class economy(commands.Cog):
 
         custom_work = cursor_guild_custom_works.find({"guild": f"{ctx.guild.id}"})
 
+        if not custom_work:
+            return
+
         c_w = None
         min = None
         max = None
 
         for i in custom_work:
             c_w = i['work']
+            print(c_w)
             min = i['min']
             max = i['max']
-            # c_w = custom work
-
-        if not custom_work:
-            return
 
         good_work = [
             "кодер",
@@ -425,9 +428,15 @@ class economy(commands.Cog):
         elif arg in c_w:
             m = random.randint(min, max)
 
-        elif arg not in good_work and arg not in medium_work and arg not in bad_work and arg not in c_w:
-            self.work.reset_cooldown(ctx)
-            return await ctx.send(f"{ctx.author.mention}, я не обнаружила вашу работу ни в одном из списков, пропишите `!!работы` чтоб узнать список всех работ.")
+        elif arg not in good_work and arg not in medium_work and arg not in bad_work:
+
+            if arg not in c_w:
+                self.work.reset_cooldown(ctx)
+                return await ctx.send(f"{ctx.author.mention}, я не обнаружила вашу работу ни в одном из списков, пропишите `!!работы` чтоб узнать список всех работ.")
+
+            else:
+                self.work.reset_cooldown(ctx)
+                return await ctx.send(f"{ctx.author.mention}, я не обнаружила вашу работу ни в одном из списков, пропишите `!!работы` чтоб узнать список всех работ.")
 
         mon = cursor.find_one(
             {
@@ -437,7 +446,7 @@ class economy(commands.Cog):
         )
 
         mount = mon["money"] + m
-        cursor.update_one({"m_id": f"{ctx.author.id}"}, {"guild": f"{ctx.guild.id}"}, {'$set': {"money": mount}})
+        cursor.update_one({"m_id": f"{ctx.author.id}", "guild": f"{ctx.guild.id}"}, {'$set': {"money": mount}})
 
         e = discord.Embed(
             description=f"{ctx.author.mention} работает на работе `{arg}`, и зарабатывает **{m}** кредита(ов)!",

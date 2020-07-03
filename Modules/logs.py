@@ -49,7 +49,6 @@ class logs(commands.Cog):
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
         # Конект БД
-        global id
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"guild_settings_logs"]  # Подключаемся к нужной колекции в нужной бд
@@ -112,7 +111,6 @@ class logs(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member):
         # Конект БД
-        global id
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"guild_settings_logs"]  # Подключаемся к нужной колекции в нужной бд
