@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, Response
 from discord.ext import commands
 import config
 import threading
+import json
 
 class RinokuBackend(commands.Cog):
   def __init__(self, bot):
@@ -10,9 +11,25 @@ class RinokuBackend(commands.Cog):
 
     
 
-    @self.app.route("/")
+    @self.app.route("/public/fetch_commands")
     def main():
-      return "test"
+      result = []
+
+      for command in self.bot.commands:
+        if command.hidden:
+          continue
+        result.append({
+          'name': command.name,
+          'description': command.description
+        })
+
+      resp = Response(json.dumps({
+        "commands": result
+      }))
+
+      resp.headers['content-type'] = "text/plain; charset=utf-8"
+
+      return resp
 
 
     thread1 = threading.Thread(target= self.app.run)

@@ -47,14 +47,12 @@ class economy(commands.Cog):
 
     @commands.command(
         aliases=[
-            "balance",
             "баланс",
             "Баланс",
-            "Balance"
         ],
         description="Посмотреть свой баланс"
     )
-    async def __bal(self, ctx, member: discord.Member = None):
+    async def balance(self, ctx, member: discord.Member = None):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -81,15 +79,14 @@ class economy(commands.Cog):
         embed.set_thumbnail(url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
-    @__bal.error
-    async def __bal_error(self, ctx, error):
+    @balance.error
+    async def bal_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 embed=discord.Embed(description=f':grey_exclamation: {ctx.author.name},обязательно укажите юзера!'))
 
     @commands.command(
         aliases=[
-            "award",
             "выдать",
             "Выдать"
         ],
@@ -98,7 +95,7 @@ class economy(commands.Cog):
     @commands.has_permissions(
         administrator=True
     )
-    async def __award(self, ctx, member: discord.Member = None, amount: int = None):
+    async def award(self, ctx, member: discord.Member = None, amount: int = None):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -144,7 +141,6 @@ class economy(commands.Cog):
     @commands.command(
         aliases=[
             "забрать",
-            "take",
             "Забрать"
         ],
         description="Забрать у пользвателя деньги"
@@ -152,7 +148,7 @@ class economy(commands.Cog):
     @commands.has_permissions(
         administrator=True
     )
-    async def __take(self, ctx, member: discord.Member = None, amount: int = None):
+    async def take(self, ctx, member: discord.Member = None, amount: int = None):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -201,14 +197,13 @@ class economy(commands.Cog):
     @commands.command(
         aliases=[
             "добавить-в-магазин",
-            "add-shop"
         ],
         description="Добавить товар в магазин"
     )
     @commands.has_permissions(
         administrator=True
     )
-    async def __add_shop(self, ctx, role: discord.Role = None, cost: int = None):
+    async def add_shop(self, ctx, role: discord.Role = None, cost: int = None):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -233,15 +228,14 @@ class economy(commands.Cog):
 
     @commands.command(
         aliases=[
-            "удалить-из-магазина",
-            "remove-shop"
+            "удалить-из-магазина"
         ],
         description="Удалить товар из магазина"
     )
     @commands.has_permissions(
         administrator=True
     )
-    async def __remove_shop(self, ctx, role: discord.Role = None):
+    async def remove_shop(self, ctx, role: discord.Role = None):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -264,12 +258,11 @@ class economy(commands.Cog):
 
     @commands.command(
         aliases=[
-            "shop",
             "магазин"
         ],
         description="Посмотреть товары в магазине"
     )
-    async def __shop(self, ctx):
+    async def shop(self, ctx):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -295,12 +288,11 @@ class economy(commands.Cog):
 
     @commands.command(
         aliases=[
-            "buy",
             "купить"
         ],
         description="Купить Товар"
     )
-    async def __buy(self, ctx, role: discord.Role = None):
+    async def buy(self, ctx, role: discord.Role = None):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -340,12 +332,11 @@ class economy(commands.Cog):
 
     @commands.command(
         aliases=[
-            "sell",
             "продать"
         ],
         description="Купить Товар"
     )
-    async def __sell(self, ctx, role: discord.Role = None):
+    async def sell(self, ctx, role: discord.Role = None):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -455,7 +446,7 @@ class economy(commands.Cog):
         await ctx.send(embed=e)
 
     @work.error
-    async def __work_error(self, ctx, error):
+    async def work_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 embed=discord.Embed(
@@ -527,7 +518,7 @@ class economy(commands.Cog):
         ],
         description="Список работ"
     )
-    async def __works(self, ctx):
+    async def works(self, ctx):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -618,7 +609,7 @@ class economy(commands.Cog):
         ],
         description="Перевести другому пользователю деньги"
     )
-    async def __transfer(self, ctx, member: discord.Member = None, amount: int = None):
+    async def transfer(self, ctx, member: discord.Member = None, amount: int = None):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -686,7 +677,7 @@ class economy(commands.Cog):
         ],
         description="Рейтинг самых богатых пользователей сервера"
     )
-    async def __top(self, ctx):
+    async def top(self, ctx):
 
         # Конект БД
         conn = pymongo.MongoClient(config.MONGODB)

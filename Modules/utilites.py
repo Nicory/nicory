@@ -94,7 +94,16 @@ class utilites(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def disable(self, ctx, name: str):
         if name == "enable" or name == "disable":
-            return ctx.send("Эти команды нельзя отключить!")
+            return await ctx.send("Эти команды нельзя отключить!")
+
+        exists = False
+
+        for command in self.bot.commands:
+            if command.name == name:
+                exists = True
+
+        if exists == False:
+            return await ctx.send("Такой команды не существует!")
 
         # Конект БД
         conn = pymongo.MongoClient(config.MONGODB)
@@ -106,8 +115,7 @@ class utilites(commands.Cog):
             cursor.update_one({"guild": ctx.guild.id}, {"$set": {f'cmd_{name}': False}})
 
         else:
-            cursor.insert_one({"guild": ctx.guild.id}, {
-                              "$set": {ctx.command.name: False}})
+            cursor.insert_one({"guild": ctx.guild.id, f'cmd_{name}': False})
 
         await ctx.send(f"Команда `{name}` успешно отключена!")
 
@@ -116,6 +124,19 @@ class utilites(commands.Cog):
         description="Включить команду")
     @commands.has_permissions(administrator=True)
     async def enable(self, ctx, name: str):
+
+        if name == "enable" or name == "disable":
+            return
+
+        exists = False
+
+        for command in self.bot.commands:
+            if command.name == name:
+                exists = True
+
+        if exists == False:
+            return await ctx.send("Такой команды не существует!")
+  
         # Конект БД
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
@@ -127,8 +148,7 @@ class utilites(commands.Cog):
                               "$set": {f'cmd_{name}': True}})
 
         else:
-            cursor.insert_one({"guild": ctx.guild.id}, {
-                              "$set": {ctx.command.name: True}})
+            cursor.insert_one({"guild": ctx.guild.id, f'cmd_{name}': True})
 
         await ctx.send(f"Команда `{name}` успешно включена!")
 

@@ -115,7 +115,7 @@ async def on_command_error(ctx, error):
 
 
 # LUR Система
-@client.command()
+@client.command(hidden=True)
 @commands.has_permissions(administrator=True)
 async def load(ctx, extension):
     client.load_extension(f'Modules.{extension}')
@@ -124,7 +124,7 @@ async def load(ctx, extension):
     await ctx.send(f"Модуль **{extension}** успешно загружен!")
 
 
-@client.command()
+@client.command(hidden=True)
 @commands.has_permissions(administrator=True)
 async def unload(ctx, extension):
     client.unload_extension(f'Modules.{extension}')
@@ -133,7 +133,7 @@ async def unload(ctx, extension):
     await ctx.send(f"Модуль **{extension}** успешно выгружен!")
 
 
-@client.command()
+@client.command(hidden=True)
 @commands.has_permissions(administrator=True)
 async def reload(ctx, extension):
     client.reload_extension(f'Modules.{extension}')
