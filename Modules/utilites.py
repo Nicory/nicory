@@ -5,6 +5,9 @@ import pymongo
 import config
 from discord.ext import commands
 from Cybernator import Paginator
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+import requests
+import io
 
 
 # Код
@@ -161,8 +164,8 @@ class utilites(commands.Cog):
 
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
-        cursor = db[f"economy"]  # Подключаемся к экономике
-        cursor_moder = db[f"warns"]  # Подключаемся к варнам
+        cursor = db[f"members_economy"]  # Подключаемся к экономике
+        cursor_moder = db[f"members_warns"]  # Подключаемся к варнам
 
         if not Member:
             Member = ctx.author
@@ -185,6 +188,8 @@ class utilites(commands.Cog):
                 "m_id": f"{Member.id}"
             }
         )
+        if not bal:
+            bal = "0"
 
         img = Image.new("RGBA", (920, 230), (0, 0, 0, 0))
         url = str(Member.avatar_url)[:-10]
@@ -205,17 +210,18 @@ class utilites(commands.Cog):
         name = Member.display_name
         tag = Member.discriminator
 
-        headline = ImageFont.truetype("arial.ttf", size=55)
+        headline = ImageFont.truetype("arial.ttf", size=50)
         maintext = ImageFont.truetype("card/andromeda.ttf", size=30)
         roletext = ImageFont.truetype("card/andromeda.ttf", size=45)
         undertext = ImageFont.truetype("card/andromeda.ttf", size=12)
 
-        idraw.text((230, 37), f'{name}#{tag}', font=headline, fill='#f480ff')
+        idraw.text((230, 37), f'{name}#{tag}', font=headline)
         idraw.text((328, 105), f'{Member.id}', font=maintext)
         idraw.text((685, 78), f"{bal['money']} §", font=roletext)
         idraw.text((685, 115), f"{Member.status}", font=roletext)
         idraw.text((685, 165), f"{warns}", font=roletext)
         img.save('user_card.png')
+        await ctx.message.delete()
         await ctx.send(file=discord.File(fp='user_card.png'))
 
 
