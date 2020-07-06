@@ -6,7 +6,7 @@ from discord.ext import commands
 from discord.utils import get
 
 
-class economy(commands.Cog):
+class levels(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._last_member = None
@@ -82,9 +82,9 @@ class economy(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(
-        aliases=["рейтинг", "rating", "топ", "юзеры", "лидеры"],
+        aliases=["рейтинг", "rating", "топ", "юзеры"],
         description="Рейтинг пользователей")
-    async def top(self, ctx):
+    async def exp_top(self, ctx):
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"members_levels"]  # Подключаемся к нужной колекции в нужной бд
@@ -128,6 +128,5 @@ class economy(commands.Cog):
         await ctx.send(embed=embed)
 
 
-
-
-
+def setup(client):
+    client.add_cog(levels(client))
