@@ -44,7 +44,8 @@ class levels(commands.Cog):
             cursor.update_one({"guild": f"{message.guild.id}", "member": f"{message.author.id}"}, {'$set': {"xp": new_xp}})
 
             if new_xp >= lvl * 1000:
-                await message.channel.send(f"{message.author.mention}\nПоздравляю, Ты получил новый уровень!\nТеперь твой уровень: {int(lvl + 1)}!")
+                embed=discord.Embed(description=f"{message.author.mention}\nПоздравляю, Ты получил новый уровень!\nТеперь твой уровень: {int(lvl + 1)}!", color=config.color)
+                await message.channel.send(embed=embed)
                 cursor.update_one({"guild": f"{message.guild.id}", "member": f"{message.author.id}"}, {'$set': {"lvl": int(lvl + 1)}})
 
     @commands.command(
