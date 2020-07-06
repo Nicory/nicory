@@ -31,13 +31,14 @@ class NoPermission(commands.errors.CommandError):
 class CommandDisabled(commands.errors.CommandError):
     pass
 
+
 client = commands.AutoShardedBot(command_prefix="#")
 client.remove_command("help")
 
 status = config.status
 init()
 
-color=config.error_color
+color = config.error_color
 
 @client.event
 async def on_ready():
@@ -67,20 +68,18 @@ except AssertionError:
 client.add_cog(RinokuBackend(client))
 
 
-
-
 @client.event
 async def on_message(message):
-    if message.guild:
-        mute_role = discord.utils.get(message.guild.roles, name="RB_Muted")
-        if mute_role in message.author.roles:
-            if mute_role not in message.author.roles:
-                pass
+    if not message.author.bot:
+        if message.guild:
+            mute_role = discord.utils.get(message.guild.roles, name="RB_Muted")
+            if mute_role in message.author.roles:
+                if mute_role not in message.author.roles:
+                    pass
+                else:
+                    await message.delete()
             else:
-                await message.delete()
-        else:
-            await client.process_commands(message)
-
+                await client.process_commands(message)
 
 
 @client.event
@@ -145,8 +144,6 @@ for file in os.listdir("./Modules"):
     if file.endswith(".py"):
         client.load_extension(f'Modules.{file[:-3]}')
         print(Fore.YELLOW + "[RB Log] " + Style.RESET_ALL + f"Module loaded - {file[:-3]}")
-
-
 
 
 @client.check
