@@ -97,7 +97,7 @@ class levels(commands.Cog):
         counter = 0
 
         for i in member:
-            uid = i["id"]
+            uid = i["member"]
             lvlu = i["lvl"]
             xp = i["xp"]
 
@@ -111,11 +111,11 @@ class levels(commands.Cog):
             else:
                 counter += 1
                 if counter == 1:
-                    message = f"<:one:710486169560809593> {usr.display_name}"
+                    message = f":first_place: {usr.display_name}"
                 elif counter == 2:
-                    message = f"<:two:710486169309282324> {usr.display_name}"
+                    message = f":second_place: {usr.display_name}"
                 elif counter == 3:
-                    message = f"<:three:710486169330122762> {usr.display_name}"
+                    message = f":third_place: {usr.display_name}"
                 else:
                     message = f"**#{counter}.** {usr.display_name}"
 

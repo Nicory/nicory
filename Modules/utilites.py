@@ -214,7 +214,7 @@ class utilites(commands.Cog):
         name = Member.display_name
         tag = Member.discriminator
 
-        headline = ImageFont.truetype("arial.ttf", size=50)
+        headline = ImageFont.truetype(path + "arial.ttf", size=50)
         maintext = ImageFont.truetype(path + "andromeda.ttf", size=30)
         roletext = ImageFont.truetype(path + "andromeda.ttf", size=45)
         undertext = ImageFont.truetype(path + "andromeda.ttf", size=12)
@@ -228,6 +228,32 @@ class utilites(commands.Cog):
         await ctx.message.delete()
         await ctx.send(file=discord.File(fp=cache+'user_card.png'))
 
+    @commands.command(aliases=["Ping", "пинг", "Пинг"])
+    async def ping(self, ctx):
+        await ctx.send(f"{self.bot.ws.latency * 1000:.0f} мс")
+
+    @commands.command(aliases=["Bot", "Бот", "бот"])
+    async def bot(self, ctx):
+
+        servers = len(self.bot.guilds)
+
+        embed = discord.Embed(title="Я - мультисерверный Discord бот",
+                              description="",
+                              color=config.color)
+        embed.set_author(name="Информация о боте Rinoku Bot", url="https://discord.gg/GND9y4e",
+                         icon_url="https://cdn.discordapp.com/avatars/622747295435456512/a_a89ab431f88e458f51c4cd5fcf62bebf.gif?size=1024")
+        embed.set_thumbnail(
+            url="https://cdn.discordapp.com/avatars/706600733931339806/d64ac666b6dd26d6b156fb01c4628510.webp?size=1024")
+        embed.add_field(name="Мои создатели:", value="NeloExt3#3100, don#4170, KislBall#9017", inline=False)
+        embed.add_field(name="Моя ОС на:", value="Python, MongoDB", inline=True)
+        embed.add_field(name="Версия:", value="Версия: 2 | Патч: 1", inline=True)
+
+        embed.add_field(name="Я нахожусь на:", value=f"{servers} серверах!", inline=False)
+        embed.add_field(name="Сервер технической поддержки", value="https://discord.gg/GND9y4e", inline=False)
+        embed.add_field(name="Сайт бота", value="https://rinokubot.space", inline=False)
+        embed.set_footer(text="Rinuku Bot | Все права были зашифрованны в двоичный код")
+
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def server(self, ctx):
