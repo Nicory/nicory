@@ -12,12 +12,7 @@ class ping(commands.Cog):
         self._last_member = None
         self.cog_name = ["что-то", "Второй элемент в списке == ког не виден в хелпе"]
 
-    @commands.command()
-    async def ping(self, ctx, arg = None):
-        if arg is None:
-            await ctx.send("Pong! [Аргумент не был указан]")
-        else:
-            await ctx.send(f"Pong!\n{arg}")
+
 
 
 def setup(client):

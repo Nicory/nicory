@@ -6,7 +6,7 @@ from discord.ext import commands
 from discord.utils import get
 
 
-class economy(commands.Cog):
+class levels(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._last_member = None
@@ -44,7 +44,8 @@ class economy(commands.Cog):
             cursor.update_one({"guild": f"{message.guild.id}", "member": f"{message.author.id}"}, {'$set': {"xp": new_xp}})
 
             if new_xp >= lvl * 1000:
-                await message.channel.send(f"{message.author.mention}\nПоздравляю, Ты получил новый уровень!\nТеперь твой уровень: {int(lvl + 1)}!")
+                embed=discord.Embed(description=f"{message.author.mention}\nПоздравляю, Ты получил новый уровень!\nТеперь твой уровень: {int(lvl + 1)}!", color=config.color)
+                await message.channel.send(embed=embed)
                 cursor.update_one({"guild": f"{message.guild.id}", "member": f"{message.author.id}"}, {'$set': {"lvl": int(lvl + 1)}})
 
     @commands.command(
@@ -82,9 +83,9 @@ class economy(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(
-        aliases=["рейтинг", "rating", "топ", "юзеры", "лидеры"],
+        aliases=["рейтинг", "rating", "топ", "юзеры"],
         description="Рейтинг пользователей")
-    async def top(self, ctx):
+    async def exp_top(self, ctx):
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"members_levels"]  # Подключаемся к нужной колекции в нужной бд
@@ -96,7 +97,7 @@ class economy(commands.Cog):
         counter = 0
 
         for i in member:
-            uid = i["id"]
+            uid = i["member"]
             lvlu = i["lvl"]
             xp = i["xp"]
 
@@ -110,11 +111,11 @@ class economy(commands.Cog):
             else:
                 counter += 1
                 if counter == 1:
-                    message = f"<:one:710486169560809593> {usr.display_name}"
+                    message = f":first_place: {usr.display_name}"
                 elif counter == 2:
-                    message = f"<:two:710486169309282324> {usr.display_name}"
+                    message = f":second_place: {usr.display_name}"
                 elif counter == 3:
-                    message = f"<:three:710486169330122762> {usr.display_name}"
+                    message = f":third_place: {usr.display_name}"
                 else:
                     message = f"**#{counter}.** {usr.display_name}"
 
@@ -128,6 +129,5 @@ class economy(commands.Cog):
         await ctx.send(embed=embed)
 
 
-
-
-
+def setup(client):
+    client.add_cog(levels(client))
