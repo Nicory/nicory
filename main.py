@@ -88,7 +88,7 @@ async def on_command_error(ctx, error):
         return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Команда не найдена!', color=color))
     elif isinstance(error, commands.MissingPermissions):
         return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, У бота недостаточно прав!\n'
-                                                              f'Если это не модераторская команда: то значит у бота нету права управлением сообщениями или права на установку реакций.', color=color))
+                                                              f'❗️ Если это не модераторская команда: то значит у бота нету права управлением сообщениями или права на установку реакций.', color=color))
     elif isinstance(error, commands.MissingPermissions) or isinstance(error, NoPermission):
         return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, У вас недостаточно прав!', color=color))
     elif isinstance(error, commands.BadArgument):
@@ -102,6 +102,9 @@ async def on_command_error(ctx, error):
         return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Пропущен аргумент с названием {error.param.name}!', color=color))
     elif isinstance(error, CommandDisabled):
         return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, эта команда отключена!', color=color))
+    elif isinstance(error, commands.CommandOnCooldown):
+        await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Воу, Воу, Не надо так быстро прописывать команды.\n'
+                                                       f'❗️ Подожди {error.retry_after:.2f} секунд и сможешь написать команду ещё раз.'))
     else:
         if "ValueError: invalid literal for int()" in str(error):
             return await ctx.send(embed=discord.Embed(description=f'❗️ {ctx.author.name}, Укажите число а не строку!', color=color))
