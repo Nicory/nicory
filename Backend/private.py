@@ -49,7 +49,6 @@ def initRoutes(bot, app):
     gld = bot.get_guild(token['guild'])
 
     def fil(el):
-      print(el.status)
       return el.status != Status.offline
 
     return {

@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, request
 from discord.ext import commands
 import config
 import threading
@@ -13,6 +13,11 @@ class RinokuBackend(commands.Cog):
 
     initRoutes(self.bot, self.app)
     privateInitRoutes(self.bot, self.app)
+
+    @self.app.after_request
+    def apply_caching(response):
+      response.headers["Server"] = f"RinokuBot/{config.version}"
+      return response
     
 
     thread1 = threading.Thread(target= self.app.run)
