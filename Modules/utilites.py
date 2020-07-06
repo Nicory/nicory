@@ -28,30 +28,35 @@ class utilites(commands.Cog):
 
         cogs = []
         for i in self.bot.cogs:
-            hide = len(i.cog_name)
+            cog = self.bot.cogs[i]
+            hide = len(cog.cog_name)
             if hide == 1:
-                cogs.append(f"{i.cog_name}")
+                cogs.append(f"{cog.cog_name[0]}")
 
         if not name:
             embed = discord.Embed(description=f"{ctx.author.display_name}, Чтоб узнать список команд пропишите !!хелп <модуль>\n"
                                               f"**Доступные модули:** {', '.join(cogs)}")
             await ctx.send(embed=embed)
         else:
-            if name in cogs:
+                        if name in cogs:
                 cog = None
+                namec = None
                 for i in self.bot.cogs:
-                    if name in i.cog_name:
-                        cog = self.bot.cogs[i]
+                    coge = self.bot.cogs[i]
+                    if name in coge.cog_name:
+                        cog = coge
+                        namec = i
                         break
-                    
+
                 name = cog.cog_name[0]
                 comm_list = []
 
                 for command in self.bot.commands:
-                    if name in command.cog_name:
+                    if command.cog_name == namec:
                         if not command.hidden:
-                            comm_list.append(f"**{prefix}{command.aliases[0]}:** {command.description}\n`{prefix}{command.usage}`\n\n")
-
+                            comm_list.append(
+                                f"**{command.aliases[0]}:** {command.description}\n`{prefix}{command.usage}`\n\n")
+                            
                 embed = discord.Embed(
                     title=f"Хелп | {name}",
                     description=f"".join(comm_list),
