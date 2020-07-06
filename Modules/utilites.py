@@ -21,44 +21,50 @@ class utilites(commands.Cog):
         aliases=["хелп", "команды", "comms", "commands", "помощь"],
         description="Это сообщение")
     async def help(self, ctx):
-        comm_num = 1
-        embedlist = []
-
         conn = pymongo.MongoClient(config.MONGODB)
         db = conn[f"RB_DB"]  # Подключаемся к нужно БД
         cursor = db[f"guild_settings_prefixes"]  # Подключаемся к нужной колекции в нужной бд
         prefix = cursor.find_one({"guild": f"{ctx.guild.id}"})["prefix"]
 
+        cogs = []
         for i in self.bot.cogs:
-            cog = self.bot.cogs[i]
-            name = cog.cog_name[0]
-            hide = len(cog.cog_name)
-            cogs_num = len(self.bot.cogs) - 1
-            comm_list = []
-
+            hide = len(i.cog_name)
             if hide == 1:
+                cogs.append(f"{i.cog_name}")
+
+        if not name:
+            embed = discord.Embed(description=f"{ctx.author.display_name}, Чтоб узнать список команд пропишите !!хелп <модуль>\n"
+                                              f"**Доступные модули:** {', '.join(cogs)}")
+            await ctx.send(embed=embed)
+        else:
+            if name in cogs:
+                cog = None
+                for i in self.bot.cogs:
+                    if name in i.cog_name:
+                        cog = self.bot.cogs[i]
+                        break
+                    
+                name = cog.cog_name[0]
+                comm_list = []
+
                 for command in self.bot.commands:
-                    if command.cog_name == i:
+                    if name in command.cog_name:
                         if not command.hidden:
-                            comm_list.append(
-                                f"`{prefix}{command.aliases[0]}` — {command.description}\n")
+                            comm_list.append(f"**{prefix}{command.aliases[0]}:** {command.description}\n`{prefix}{command.usage}`\n\n")
 
                 embed = discord.Embed(
-                    title=f"ПОМОЩЬ | {name} | {comm_num}/{cogs_num}",
+                    title=f"Хелп | {name}",
                     description=f"".join(comm_list),
-                    color=config.color)
-                embed.set_footer(text="Rinoku Bot | Все права были зашифрованны в двоичный код", icon_url=self.bot.user.avatar_url)  # Сюда Текст и Иконку футера
+                    color=color)
                 embed.set_thumbnail(
                     url='https://cdn.discordapp.com/attachments/695787093242282055/707320024473534485/what.png')
 
-                embedlist.append(embed)
-                comm_num += 1
-
-        message = await ctx.send(embed=embedlist[0])
-        page = Paginator(self.bot, message, timeout=200, only=ctx.author, delete_message=True, time_stamp=True,
-                         use_more=False,
-                         embeds=embedlist, color=config.color, language="ru", footer=True, footer_icon=self.bot.user.avatar_url)  # Сюда Цвет и Текст футера
-        await page.start()
+                await ctx.send(embed=embed)
+                
+            else:
+                embed = discord.Embed(description=f"{ctx.author.display_name}, Модуль не найден!\nЧтоб узнать список команд пропишите !!хелп <модуль>\n"
+                                f"**Доступные модули:** {', '.join(cogs)}")
+                await ctx.send(embed=embed)
 
     @commands.command(
         alises=["настройка-варны", "Настройка-варны"],
