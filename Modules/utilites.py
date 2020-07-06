@@ -203,8 +203,10 @@ class utilites(commands.Cog):
         img.paste(response, (5, 5, 225, 225))
 
         # создание изображения на основе картинки из файла PSD
-        path = 'card/card.png'
-        banner = Image.open(path)
+        path = './Data/Template/'
+        cache = './Data/Cache/'
+
+        banner = Image.open(path+"background.png")
         banner = banner.convert('RGBA')
         img.paste(banner, (0, 0, 920, 230), banner)
 
@@ -213,18 +215,18 @@ class utilites(commands.Cog):
         tag = Member.discriminator
 
         headline = ImageFont.truetype("arial.ttf", size=50)
-        maintext = ImageFont.truetype("card/andromeda.ttf", size=30)
-        roletext = ImageFont.truetype("card/andromeda.ttf", size=45)
-        undertext = ImageFont.truetype("card/andromeda.ttf", size=12)
+        maintext = ImageFont.truetype(path + "andromeda.ttf", size=30)
+        roletext = ImageFont.truetype(path + "andromeda.ttf", size=45)
+        undertext = ImageFont.truetype(path + "andromeda.ttf", size=12)
 
         idraw.text((230, 37), f'{name}#{tag}', font=headline)
         idraw.text((328, 105), f'{Member.id}', font=maintext)
         idraw.text((685, 78), f"{bal} §", font=roletext)
         idraw.text((685, 115), f"{Member.status}", font=roletext)
         idraw.text((685, 165), f"{warns}", font=roletext)
-        img.save('user_card.png')
+        img.save(cache+'user_card.png')
         await ctx.message.delete()
-        await ctx.send(file=discord.File(fp='user_card.png'))
+        await ctx.send(file=discord.File(fp=cache+'user_card.png'))
 
 
     @commands.command()
