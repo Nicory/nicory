@@ -155,11 +155,11 @@ class utilites(commands.Cog):
 
         await ctx.send(f"Команда `{name}` успешно включена!")
 
-
     # userinfo
     @commands.command(
         aliases=["Юзеринфо", "юзеринфо", "юзер", "Юзер", "User", "user", "Userinfo"]
     )
+    @commands.cooldown(1, 15, commands.BucketType.user)
     async def userinfo(self, ctx, Member: discord.Member = None):
 
         conn = pymongo.MongoClient(config.MONGODB)
@@ -190,6 +190,8 @@ class utilites(commands.Cog):
         )
         if not bal:
             bal = "0"
+        else:
+            bal = bal['money']
 
         img = Image.new("RGBA", (920, 230), (0, 0, 0, 0))
         url = str(Member.avatar_url)[:-10]
@@ -217,7 +219,7 @@ class utilites(commands.Cog):
 
         idraw.text((230, 37), f'{name}#{tag}', font=headline)
         idraw.text((328, 105), f'{Member.id}', font=maintext)
-        idraw.text((685, 78), f"{bal['money']} §", font=roletext)
+        idraw.text((685, 78), f"{bal} §", font=roletext)
         idraw.text((685, 115), f"{Member.status}", font=roletext)
         idraw.text((685, 165), f"{warns}", font=roletext)
         img.save('user_card.png')
