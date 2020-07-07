@@ -2,7 +2,7 @@ import json
 from flask import Response
 
 def initRoutes(bot, app):
-  @app.route("/public/fetch_commands", endpoint="fetch_commands")
+  @app.route("/public/fetch_commands", endpoint="fetch_commands", methods=["GET"])
   def fetch_commands():
       result = []
 

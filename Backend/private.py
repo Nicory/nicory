@@ -8,7 +8,7 @@ from flask_api import status as http_status
 
 def initRoutes(bot, app):
   @app.route("/private/auth/<token>", endpoint="auth")
-  def auth_token(token):
+  def auth_token(token, methods=["GET"]):
     conn = MongoClient(config.MONGODB)
     db = conn["RB_DB"]
     cursor = db['admin_tokens']
@@ -37,7 +37,7 @@ def initRoutes(bot, app):
       'member': int(result['member'])
     }, 200)
 
-  @app.route("/private/info")
+  @app.route("/private/info", methods=["GET"])
   def guild_info():
     if not 'Authorization' in request.headers:
       return Response(status=401)
