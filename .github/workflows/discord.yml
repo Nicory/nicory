@@ -1,0 +1,13 @@
+name: 'Discord message'
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: 'https://discordapp.com/api/webhooks/725377860310663250/Nozx_eZZNReIPsBeFpD49fU7RUvMeXb4PCD1PUgbRVxAbhR-KkxiGjGkTYyzUl0bVI46'
+        uses: Ilshidur/action-discord@master
