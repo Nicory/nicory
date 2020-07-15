@@ -12,6 +12,12 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
+  if (!command.hidden && command.module != undefined) {
+    client.modules[command.module] = client.modules[command.module]
+      ? client.modules[command.module]
+      : [];
+    client.modules[command.module].push(command);
+  }
 }
 
 const cooldowns = new Discord.Collection();
@@ -31,10 +37,7 @@ client.on('message', message => {
 
   if (!command) return;
 
-  if (!command.hidden && command.module != undefined) { 
-    client.modules[command.module] = client.modules[command.module] ? client.modules[command.module] : [];
-    client.modules.push(command);
-  }
+  
 
   if (!message.guild) return;
 
@@ -80,10 +83,10 @@ client.on('message', message => {
 
 
   if (isAsync(command.execute)) {
-    command.execute(message, args).then();
+    command.execute(message, args, client);
   } else { 
     try {
-      command.execute(message, args);
+      command.execute(message, args, client);
     } catch (error) {
       console.error(error);
       message.reply('произошла ошибка во время запуска команды!');
