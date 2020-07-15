@@ -4,7 +4,9 @@ config.json:
 {
   "token": "token",
   "prefix": "prefix",
-  "mongo": "mongo uri"
+  "mongo": "mongo url",
+  "date": "Среда, 15 июля 2020 г. (19:19)",
+  "copy": "Nicory Bot | Все права были зашифрованны в двоичный код"
 }
 ```
 
