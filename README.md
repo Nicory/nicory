@@ -22,7 +22,7 @@ module.exports = {
   usage: "использование команды без префикса",
   cooldown: 5, // в секундах
   args: false, // принимает ли команда аргументы
-  async execute(message, args){
+  async execute(message, args, client){
     // код команды
   },
   permissions: ["массив прав для юзера"]
