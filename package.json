@@ -4,7 +4,7 @@
   "description": "Nicory это мультисерверный Discord бот с различным функционалом, от обычной модерации до полноценной системы логирования, экономики и системы уровней!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node unitTest.js"
   },
   "author": "KislBall and NeloExt3",
   "license": "UNLICENSED",
