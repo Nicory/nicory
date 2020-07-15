@@ -2,6 +2,22 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const { prefix, token } = require('./config.json');
 const isAsync = (f) => f.constructor.name === "AsyncFunction";
+const chalk = require("chalk");
+
+console.log(fs.readFileSync("./assets/banner.txt").toString() + "\n");
+
+const oldLog = console.log;
+console.log = (msg, primary = true) => {
+  fs.appendFileSync(`./logs/${new Date().toLocaleDateString().replace(/\//g, ".")}.log`, `[Nicory][LOG][${new Date().toLocaleString()}] ${msg}\n`);
+  if (primary) { 
+    oldLog(
+      `[${chalk.magenta("Nicory")}][${chalk.yellowBright(
+        "LOG"
+      )}][${new Date().toLocaleString()}] ${msg}`
+    );
+    
+  }
+}
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -23,7 +39,7 @@ for (const file of commandFiles) {
 const cooldowns = new Discord.Collection();
 
 client.once('ready', () => {
-  console.log('ви хэв коннектед то дискорд');
+  console.log(`Logged in to Discord as ${client.user.tag}`);
 });
 
 client.on('message', message => {
@@ -92,6 +108,8 @@ client.on('message', message => {
       message.reply('произошла ошибка во время запуска команды!');
     }
   }
+
+  console.log(`Executed command ${commandName} by ${message.author.tag}(${message.author.id}) in guild ${message.guild.name}(${message.guild.id}) with following message(${message.id}): ${message.content}`, false);
 
   
 });
