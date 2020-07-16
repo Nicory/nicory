@@ -115,3 +115,6 @@ client.on('message', message => {
 });
 
 client.login(token);
+
+const Backend = require("./backend/index.coffee");
+new Backend(client);

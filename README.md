@@ -6,7 +6,8 @@ config.json:
   "prefix": "prefix",
   "mongo": "mongo url",
   "date": "Среда, 15 июля 2020 г. (19:19)",
-  "copy": "Nicory Bot | Все права были зашифрованны в двоичный код"
+  "copy": "Nicory Bot | Все права были зашифрованны в двоичный код",
+  "apiPort": 8080
 }
 ```
 

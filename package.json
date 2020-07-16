@@ -12,6 +12,7 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "discord.js": "^12.2.0",
+    "express": "^4.17.1",
     "ffmpeg-static": "^4.2.5",
     "mongodb": "^3.5.9",
     "mongoose": "^5.9.24"
