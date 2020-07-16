@@ -1,5 +1,6 @@
 module.exports = (arg) => {
   const mentionRegexp = /(<@)?(!)?\d{17,18}(>)?/gm;
+  if (!arg) return null;
   if (!arg.match(mentionRegexp)) return null;
   let id = arg;
   if (arg.startsWith("<@") && arg.endsWith(">")) {

@@ -40,17 +40,17 @@ module.exports = {
 
 
         const embed = new Discord.MessageEmbed()
-        .setColor('#e155ff')
-        .setTitle(`${nickname}`)
-        .setAuthor('Информация про пользователя')
-        .setDescription(`Кислый тут сделаешь типа кастомный текст можно поставить о себе типа эта хуета`)
-        .addFields(
-            {name: 'Основная информация:', value: `Имя пользователя: ${user}\nАккаунт создан: \nПрисоединился: \nСтатус: ${status}\nИграет в: ${user.presence.activities}`},
-            {name: 'Уровень', value: `Кислый когда сделаем уровни, тута сделаешь`, inline: true},
-            {name: 'Баланс', value: `Кислый когда сделаем экономику, тута сделаешь`, inline: true},
-            {name: 'Опыт', value: `Кислый когда сделаем уровни, тута сделаешь`, inline: true},
-        )
-        .setFooter(`ID: ${user.id}`)
+          .setColor("#e155ff")
+          .setTitle(`${nickname}`)
+          .setAuthor("Информация про пользователя")
+          .setDescription(
+            `Кислый тут сделаешь типа кастомный текст можно поставить о себе типа эта хуета`
+          )
+          .addFields({
+            name: "Основная информация:",
+            value: `Имя пользователя: ${user}\nАккаунт создан: \nПрисоединился: \nСтатус: ${status}\nИграет в: ${user.presence.activities.length != 0 ? user.presence.activities.join(" ") : "ничто"}`,
+          })
+            .setFooter(`ID: ${user.id}`);
         message.channel.send(embed);
     }
 }
