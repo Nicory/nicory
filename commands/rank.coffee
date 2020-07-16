@@ -38,3 +38,4 @@ module.exports =
   description: "Узнать уровень юзера!"
   usage: "ping [пользователь]"
   aliases: ["ранг", "ранк"]
+  cooldown: 10
