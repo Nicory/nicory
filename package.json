@@ -14,8 +14,10 @@
     "discord.js": "^12.2.0",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.2.5",
+    "handlebars": "^4.7.6",
     "mongodb": "^3.5.9",
-    "node-cache": "^5.1.2"
+    "node-cache": "^5.1.2",
+    "node-html-to-image": "^3.0.1"
   },
   "devDependencies": {
     "coffee-loader": "^1.0.0",

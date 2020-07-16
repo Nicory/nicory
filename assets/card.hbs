@@ -1,0 +1,51 @@
+<div class="rank-card">
+  <img src="{{avatar}}"
+    alt="" class="rank-card__avatar">
+  <div class="rank-card__text-holder">
+    <h2 class="rank-card__nickname">{{tag}}</h2>
+    <h4 class="rank-card__info">EXP: {{exp}}; LVL: {{lvl}}</h4>
+  </div>
+</div>
+
+<style>
+  *{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', 'sans-serif';
+  color: white;
+}
+
+body{
+  padding: 10px;
+}
+
+.rank-card__avatar{
+  border-radius: 50%;
+  max-width: 75px;
+  max-height: 75px
+}
+
+.rank-card{
+  background-color: #333333;
+  width: 500px;
+  height: 115px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 15px;
+}
+
+.rank-card__text-holder{
+  text-align: right;
+}
+.rank-card__info{
+  color: #e5e5e5;
+}
+
+body{
+  width: 520px;
+  height: 135px;
+}
+</style>
