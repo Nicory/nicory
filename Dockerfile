@@ -1,6 +1,7 @@
 FROM node:14
 WORKDIR /usr/app/src
 COPY package*.json ./
-RUN npm install
+RUN mkdir /root/.cache && mkdir /root/.cache/ffmpeg-static-nodejs && npm install
 COPY . .
-CMD ["node", "."]
+RUN npm run bundle
+CMD ["node", "./dist/bundle.js"]

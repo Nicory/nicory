@@ -4,14 +4,23 @@
   "description": "Nicory это мультисерверный Discord бот с различным функционалом, от обычной модерации до полноценной системы логирования, экономики и системы уровней!",
   "main": "index.js",
   "scripts": {
-    "test": "node unitTest.js"
+    "test": "node unitTest.js",
+    "bundle": "webpack --config webpack.config.js"
   },
   "author": "KislBall and NeloExt3",
   "license": "UNLICENSED",
   "dependencies": {
     "chalk": "^4.1.0",
     "discord.js": "^12.2.0",
+    "ffmpeg-static": "^4.2.5",
     "mongodb": "^3.5.9",
     "mongoose": "^5.9.24"
+  },
+  "devDependencies": {
+    "coffee-loader": "^1.0.0",
+    "coffeescript": "^2.5.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-node-externals": "^2.5.0"
   }
 }
