@@ -14,5 +14,6 @@ module.exports = {
       test: /\.coffee$/,
       loader: 'coffee-loader'
     }]
-  }
+  },
+  devtool: 'inline-source-map',
 };

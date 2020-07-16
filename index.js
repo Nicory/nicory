@@ -114,6 +114,8 @@ client.on('message', message => {
   
 });
 
+require("./events/expEvent.coffee")(client);
+
 client.login(token);
 
 const Backend = require("./backend/index.coffee");
