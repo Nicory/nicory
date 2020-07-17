@@ -89,7 +89,7 @@ client.on('message', message => {
 
   if (command.permissions) { 
     let num = 0;
-    for (let perm of commands.permissions) { 
+    for (let perm of command.permissions) { 
       num = num | Discord.Permissions.FLAGS[perm];
     }
 
