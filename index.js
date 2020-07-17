@@ -53,8 +53,6 @@ client.on('message', message => {
 
   if (!command) return;
 
-  
-
   if (!message.guild) return;
 
   if (command.args && !args.length) {
