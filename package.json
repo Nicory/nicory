@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node unitTest.js",
-    "bundle": "webpack --config webpack.config.js"
+    "bundle": "webpack --config webpack.config.js",
+    "start": "npm run bundle && node dist/bundle.js"
   },
   "author": "KislBall and NeloExt3",
   "license": "UNLICENSED",
@@ -16,7 +17,6 @@
     "ffmpeg-static": "^4.2.5",
     "handlebars": "^4.7.6",
     "mongodb": "^3.5.9",
-    "node-cache": "^5.1.2",
     "node-html-to-image": "^3.0.1"
   },
   "devDependencies": {

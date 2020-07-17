@@ -53,8 +53,6 @@ client.on('message', message => {
 
   if (!command) return;
 
-  
-
   if (!message.guild) return;
 
   if (command.args && !args.length) {
@@ -89,7 +87,7 @@ client.on('message', message => {
 
   if (command.permissions) { 
     let num = 0;
-    for (let perm of commands.permissions) { 
+    for (let perm of command.permissions) { 
       num = num | Discord.Permissions.FLAGS[perm];
     }
 

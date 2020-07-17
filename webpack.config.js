@@ -15,5 +15,4 @@ module.exports = {
       loader: 'coffee-loader'
     }]
   },
-  devtool: 'inline-source-map',
 };

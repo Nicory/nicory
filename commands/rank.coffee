@@ -19,6 +19,8 @@ module.exports =
 
     author = client.users.cache.get userId
 
+    message.channel.startTyping()
+
     data = await col.findOne {guild: message.guild.id, member: author.id} 
     
     templateContent = fs.readFileSync(path.join(process.cwd(), "assets", "card.hbs")).toString()
@@ -32,6 +34,7 @@ module.exports =
     }
 
     buf = await htmlToImage({html: template(context), transparent: true})
+    message.channel.stopTyping()
     message.channel.send({files: [buf]})
 
   module: "Уровни"
