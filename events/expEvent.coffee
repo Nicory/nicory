@@ -1,10 +1,7 @@
 config = require "../config.json"
 mongodb = require "mongodb"
-Cache = require "../utils/cache.js"
 
 randint = (min, max) -> Math.round min - 0.5 + Math.random() * (max - min + 1)
-
-cachePool = new Cache 0.5
 
 module.exports = (client) ->
   event = (message) ->
@@ -14,13 +11,11 @@ module.exports = (client) ->
     conn = await mongodb.MongoClient.connect(config.mongo)
     col = conn.db("nicory").collection("user_exp")
 
-    totalExp = await cachePool.get("exp_#{message.author.id}", () -> 
-      res = await col.findOne({'member': message.author.id, 'guild': message.guild.id})
-      if res 
-        return res.exp
-      else
-        return 0
-    )
+    res = await col.findOne({'member': message.author.id, 'guild': message.guild.id})
+    if res 
+      return res.exp
+    else
+      return 0
 
     given = totalExp + randint(10,25)
 
