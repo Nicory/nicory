@@ -20,7 +20,7 @@ module.exports = {
         for (const command of mdl) {
           content += "`" + config.prefix + command.name + "` "
         }
-        embed.addField(`${moduleName}(${config.prefix}help ${moduleName})`, content);
+        embed.addField(`${moduleName}(${config.prefix}help ${moduleName})`, content, true);
       }
     } else { // sending module specific help
       const moduleName = capitalizeFirstLetter(args[0]);
@@ -34,7 +34,7 @@ module.exports = {
           `${config.prefix}${command.name}`,
           `${command.description ? command.description : "<нет информации>"}\n\n**Использование**: \`${
             command.usage ? command.usage : "<нет информации>"
-          }\`\n**Алиасы**: ${aliases.map(a => '`' + a + '`').join(" ")}`
+          }\`\n**Алиасы**: ${aliases.map(a => '`' + a + '`').join(" ")}`, true
         );
       }
     }

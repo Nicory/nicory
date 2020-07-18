@@ -2,19 +2,19 @@ module.exports = {
   name: "kick",
   hidden: false,
   module: "Модерация",
-  description: "кикнуть участника",
+  description: "Кикнуть участника",
   aliases: ["кик", 'Кик', 'Kick'],
-  usage: "kick юзер причина",
+  usage: "kick <юзер> [причина]",
   args: false,
-  async execute(message, args, client){
+  async execute(message, args, client, usage){
     const getMember = require("../utils/getMember.js");
 
     userId = getMember(args[0])
     const user = message.guild.members.resolve(userId)
     const author = message.guild.members.resolve(message.author.id)
 
-    if (args[0]==undefined) {
-      return await message.reply(` обязательно укажите юзера!`)
+    if (args[0]==undefined || !author) {
+      return usage()
     }
 
     if (userId==message.author.id) {
@@ -31,7 +31,7 @@ module.exports = {
     if (reason=="") {
       var reason='Не указана'
     }
-    message.author.send(`Вы были кикнуты с сервера ${message.guild.name} модератором ${author}\nПо причине: ${reason}`)
+    user.send(`Вы были кикнуты с сервера ${message.guild.name} модератором ${author}\nПо причине: ${reason}`)
     user.kick(reason)
     message.react('✅');
 
