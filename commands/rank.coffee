@@ -19,6 +19,9 @@ module.exports =
 
     author = client.users.cache.get userId
 
+    if author.bot
+      return await message.channel.send "<:nu:732623339591303199>"
+
     message.channel.startTyping()
 
     data = await col.findOne {guild: message.guild.id, member: author.id} 
