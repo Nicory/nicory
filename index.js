@@ -78,7 +78,7 @@ client.on('message', message => {
 
     if (now < expirationTime) {
       const timeLeft = (expirationTime - now) / 1000;
-      return message.reply(`подожди еще ${timeLeft.toFixed(1)} секунд перед использование команлы \`${command.name}\`!`);
+      return message.reply(`подожди еще ${timeLeft.toFixed(1)} секунд перед использование команды \`${command.name}\`!`);
     }
   }
 
