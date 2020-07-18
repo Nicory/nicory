@@ -8,6 +8,9 @@ module.exports = (client) ->
     if !message.guild
       return
 
+    if message.author.bot
+      return
+
     conn = await mongodb.MongoClient.connect(config.mongo)
     col = conn.db("nicory").collection("user_exp")
 
