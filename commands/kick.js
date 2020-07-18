@@ -6,15 +6,15 @@ module.exports = {
   aliases: ["кик", 'Кик', 'Kick'],
   usage: "kick <юзер> [причина]",
   args: false,
-  async execute(message, args, client){
+  async execute(message, args, client, usage){
     const getMember = require("../utils/getMember.js");
 
     userId = getMember(args[0])
     const user = message.guild.members.resolve(userId)
     const author = message.guild.members.resolve(message.author.id)
 
-    if (args[0]==undefined) {
-      return await message.reply(` обязательно укажите юзера!`)
+    if (args[0]==undefined || !author) {
+      return usage()
     }
 
     if (userId==message.author.id) {
