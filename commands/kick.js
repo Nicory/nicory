@@ -2,9 +2,9 @@ module.exports = {
   name: "kick",
   hidden: false,
   module: "Модерация",
-  description: "кикнуть участника",
+  description: "Кикнуть участника",
   aliases: ["кик", 'Кик', 'Kick'],
-  usage: "kick юзер причина",
+  usage: "kick <юзер> [причина]",
   args: false,
   async execute(message, args, client){
     const getMember = require("../utils/getMember.js");
