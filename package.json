@@ -9,7 +9,7 @@
     "start": "npm run bundle && node dist/bundle.js"
   },
   "author": "KislBall and NeloExt3",
-  "license": "UNLICENSED",
+  "license": "LicenseRef-LICENSE",
   "dependencies": {
     "chalk": "^4.1.0",
     "discord.js": "^12.2.0",
@@ -17,6 +17,7 @@
     "ffmpeg-static": "^4.2.5",
     "handlebars": "^4.7.6",
     "mongodb": "^3.5.9",
+    "node-fetch": "^2.6.0",
     "node-html-to-image": "^3.0.1"
   },
   "devDependencies": {
