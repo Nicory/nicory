@@ -17,7 +17,8 @@ module.exports = {
         .setThumbnail(client.user.avatarURL())
         .addFields(
             {name: 'Мои создатели:', value: '<a:neloext3:732991861387689984> NeloExt3#3100, \n<a:kislball:732991861177712760> KislBall#9017', inline: true},
-            {name: 'Я создана на:', value: 'Discord.js [12], MongoDB', inline: true},
+            { name: 'Я написана на:', value: 'CoffeeScript\nJavaScript', inline: true },
+            {name: "Мои библеотеки:", value: Object.keys(package.dependencies).join("\n"), inline: true}, 
             {name: 'Серверная информация:', value: `Префикс: ${config.prefix}\n`, inline: false},
             {name: 'Версия:', value: `${package.version} [${config.date}] Debug`, inline: false},
             {name: 'Я нахожусь на:', value: `${client.guilds.cache.size} серверах!`},
