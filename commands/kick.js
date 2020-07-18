@@ -31,7 +31,7 @@ module.exports = {
     if (reason=="") {
       var reason='Не указана'
     }
-    message.author.send(`Вы были кикнуты с сервера ${message.guild.name} модератором ${author}\nПо причине: ${reason}`)
+    user.send(`Вы были кикнуты с сервера ${message.guild.name} модератором ${author}\nПо причине: ${reason}`)
     user.kick(reason)
     message.react('✅');
 
