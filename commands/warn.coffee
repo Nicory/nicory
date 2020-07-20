@@ -1,5 +1,5 @@
 getMember = require "../utils/getMember.js"
-mongodb = require "mongodb"
+db = require "../utils/database.coffee"
 config = require "../config.json"
 
 randStr = () -> Math.random().toString(16).slice 2
@@ -23,12 +23,11 @@ module.exports =
     if !reason
       await message.reply "Укажите причину"
 
-    connection = await mongodb.MongoClient.connect config.mongo
-    col = connection.db("nicory").collection "warns"
+    warns = await db.get("#{message.guild.id}_#{message.author.guild}", "warns", [])
+    warns.push {guild: message.guild.id, member: user.user.id, moderator: message.author.id, reason: reason, id: randStr()}
 
-    col.insertOne({guild: message.guild.id, member: user.user.id, moderator: message.author.id, reason: reason, id: randStr()}).then () -> 
+    db.set("#{message.guild.id}_#{message.author.guild}", "warns", warns).then () ->
       message.react "✅"
-
 
 
 
