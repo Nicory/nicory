@@ -15,10 +15,9 @@ module.exports = (client) ->
     col = conn.db("nicory").collection("user_exp")
 
     res = await col.findOne({'member': message.author.id, 'guild': message.guild.id})
+    totalExp = 0
     if res 
-      return res.exp
-    else
-      return 0
+      totalExp = res.exp
 
     given = totalExp + randint(10,25)
 

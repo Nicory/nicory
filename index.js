@@ -42,7 +42,7 @@ client.once('ready', () => {
   console.log(`Logged in to Discord as ${client.user.tag}`);
 });
 
-client.on('message', message => {
+client.on('message', async message => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -95,16 +95,14 @@ client.on('message', message => {
   }
 
 
-
-  if (isAsync(command.execute)) {
-    command.execute(message, args, client);
-  } else { 
-    try {
-      command.execute(message, args, client);
-    } catch (error) {
-      console.error(error);
-      message.reply('произошла ошибка во время запуска команды!');
+  try {
+    await command.execute(message, args, client);
+  } catch (error) {
+    if (error instanceof Discord.DiscordAPIError) { 
+      return message.reply("API ошибка!\nЭто могло произойти по нескольким причинам:\n* У бота нет прав(самое частое)\n* Баги discord.js")
     }
+    console.error(error);
+    message.reply('произошла ошибка во время запуска команды!');
   }
 
   console.log(`Executed command ${commandName} by ${message.author.tag}(${message.author.id}) in guild ${message.guild.name}(${message.guild.id}) with following message(${message.id}): ${message.content}`, false);
@@ -113,6 +111,7 @@ client.on('message', message => {
 });
 
 require("./events/expEvent.coffee")(client);
+require("./events/onJoin")(client);
 
 client.login(token);
 
