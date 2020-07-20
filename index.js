@@ -111,6 +111,7 @@ client.on('message', async message => {
 });
 
 require("./events/expEvent.coffee")(client);
+require("./events/onJoin")(client);
 
 client.login(token);
 
