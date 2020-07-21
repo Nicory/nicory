@@ -1,3 +1,5 @@
+const db = require("../utils/database.coffee");
+
 module.exports = {
     name: "userinfo",
     module: "Основное",
@@ -44,13 +46,14 @@ module.exports = {
           .setTitle(`${nickname}`)
           .setAuthor("Информация про пользователя")
           .setDescription(
-            `Кислый тут сделаешь типа кастомный текст можно поставить о себе типа эта хуета`
+            await db.get(`${message.guild.id}_${user.user.id}`, "bio", "Пользователь не указал информацию о себе")
           )
           .addFields({
             name: "Основная информация:",
             value: `Имя пользователя: ${user}\nАккаунт создан: \nПрисоединился: \nСтатус: ${status}\nИграет в: ${user.presence.activities.length != 0 ? user.presence.activities.join(" ") : "ничто"}`,
           })
-            .setFooter(`ID: ${user.id}`);
+          .setFooter(`ID: ${user.id}`)
+          .setThumbnail(user.user.avatarURL())
         message.channel.send(embed);
     }
 }
