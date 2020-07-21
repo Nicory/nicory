@@ -1,3 +1,17 @@
+const ms = require("ms");
+const haste = require("hastebin-gen");
+
+function getHasteLink(usage) { 
+  let str = `Кучей занято: ${usage.heapTotal / 1024 / 1024}MB\n`;
+  str += `Кучей использовано: ${usage.heapUsed / 1024 / 1024}MB\n`;
+  str += `Используется внешними источниками NodeJS(объекты C++ и тд): ${
+    (usage.external - usage.arrayBuffers) / 1024 / 1024
+  }MB\n`;
+  str += `Занято бинарными массивами: ${usage.arrayBuffers / 1024 / 1024}MB\n`;
+  str += `============\nИтого: ${usage.rss / 1024 / 1024}MB`;
+  return haste(str, {extension: "txt"});
+}
+
 module.exports = {
     name: "botinfo",
     module: "Основное",
@@ -21,7 +35,7 @@ module.exports = {
             {
               name: "Мои создатели:",
               value:
-                "<a:neloext3:732991861387689984> NeloExt3#3100, \n<a:kislball:732991861177712760> KislBall#9017",
+                "NeloExt3#3100\nKislBall#9017",
               inline: true,
             },
             {
@@ -48,7 +62,21 @@ module.exports = {
               name: "Я нахожусь на:",
               value: `${client.guilds.cache.size} серверах!`,
             },
-            { name: "Пинг", value: `${message.client.ws.ping} мс!` },
+            { name: "Пинг", value: `${message.client.ws.ping} мс!`, inline: true},
+            {
+              name: "Аптайм:",
+              value: ms(client.uptime),
+              inline: true,
+            },
+            {
+              name: "Использование ОЗУ:",
+              value: `${
+                (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(1)
+              }MB\nА информацию для задротов можно узнать [здесь](${await getHasteLink(
+                process.memoryUsage()
+              )})`,
+              inline: true,
+            },
             {
               name: "Сервер технической поддержки:",
               value: "https://discord.gg/GND9y4e",
