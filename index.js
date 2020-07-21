@@ -19,7 +19,7 @@ console.log = (msg, primary = true) => {
   }
 }
 
-const client = new Discord.Client();
+const client = new Discord.Client({fetchAllMembers: true});
 client.commands = new Discord.Collection();
 client.modules = {};
 
