@@ -1,10 +1,15 @@
 const Discord = require('discord.js')
+const db = require('../utils/database.coffee')
 
 module.exports = client => {
   client.on("message", message => {
-    const embed = new Discord.MessageEmbed()
 
+    if (message.guild==undefined) {
+        return
+    }
     
+    await db.get(`${message.guild.id}_${message.author.id}`, 'money', parseInt(0));
     
+
   });
 };
