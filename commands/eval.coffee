@@ -1,4 +1,5 @@
 util = require "util"
+db = require "../utils/database.coffee"
 
 module.exports = 
   name: "eval"
@@ -7,7 +8,7 @@ module.exports =
       evaled = ""
       try 
         evaled = await eval(args.join(' '))
-        message.channel.send(util.inspect(evaled))
+        message.channel.send(evaled)
 
       catch error 
         message.reply('there was an error during evaluation.\n' + error)
