@@ -5,6 +5,12 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function perms(command) { 
+  const perm = command.permissions;
+  if (!perm) return "";
+  return `**Права для запуска команды**: ${perm.map(el => "`" + el + "`").join(" ")}`
+}
+
 module.exports = {
   name: "help",
   async execute(message, args, client) {
@@ -20,7 +26,7 @@ module.exports = {
         for (const command of mdl) {
           content += "`" + config.prefix + command.name + "` "
         }
-        embed.addField(`${moduleName}(${config.prefix}help ${moduleName})`, content, true);
+        embed.addField(`${moduleName}(${config.prefix}help ${moduleName})`, content);
       }
     } else { // sending module specific help
       const moduleName = capitalizeFirstLetter(args[0]);
@@ -34,7 +40,7 @@ module.exports = {
           `${config.prefix}${command.name}`,
           `${command.description ? command.description : "<нет информации>"}\n\n**Использование**: \`${
             command.usage ? command.usage : "<нет информации>"
-          }\`\n**Алиасы**: ${aliases.map(a => '`' + a + '`').join(" ")}`, true
+          }\`\n**Алиасы**: ${aliases.map(a => '`' + a + '`').join(" ")}\n${perms(command)}`
         );
       }
     }
