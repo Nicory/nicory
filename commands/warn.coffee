@@ -23,10 +23,12 @@ module.exports =
     if !reason
       await message.reply "Укажите причину"
 
-    warns = await db.get("#{message.guild.id}_#{message.author.guild}", "warns", [])
-    warns.push {guild: message.guild.id, member: user.user.id, moderator: message.author.id, reason: reason, id: randStr()}
+    console.dir user.user.id
 
-    db.set("#{message.guild.id}_#{message.author.guild}", "warns", warns).then () ->
+    warns = await db.get("#{message.guild.id}_#{user.user.id}", "warns", [])
+    warns.push {moderator: message.author.id, reason: reason, id: randStr(), date: new Date()}
+
+    db.set("#{message.guild.id}_#{user.user.id}", "warns", warns).then () ->
       message.react "✅"
 
 
