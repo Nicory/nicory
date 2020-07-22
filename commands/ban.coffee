@@ -31,3 +31,4 @@ module.exports =
   description: "Забанить пользователя"
   usage: "ban <юзер> [причина]"
   aliases: ["бан"]
+  permissions: ["BAN_MEMBERS"]

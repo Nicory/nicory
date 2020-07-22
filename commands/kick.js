@@ -6,6 +6,7 @@ module.exports = {
   aliases: ["кик", 'Кик', 'Kick'],
   usage: "kick <юзер> [причина]",
   args: false,
+  permissions: ["KICK_MEMBERS"],
   async execute(message, args, client, usage){
     const getMember = require("../utils/getMember.js");
 
