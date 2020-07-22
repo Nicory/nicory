@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const { prefix, token } = require('./config.json');
 const isAsync = (f) => f.constructor.name === "AsyncFunction";
 const chalk = require("chalk");
+const db = require("./utils/database.coffee");
 
 console.log(fs.readFileSync("./assets/banner.txt").toString() + "\n");
 
@@ -85,23 +86,32 @@ client.on('message', async message => {
   timestamps.set(message.author.id, now);
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
-  if (command.permissions) { 
+  if (command.permissions) {
     let num = 0;
-    for (let perm of command.permissions) { 
+    for (let perm of command.permissions) {
       num = num | Discord.Permissions.FLAGS[perm];
     }
 
-    if (!message.member.hasPermission(num)) return message.reply("у вас нет прав на запуск этой команды!");
+    const modRole = await db.get(message.guild.id, "modRole", "");
+
+    if (!message.member.permissions.has(num)) { 
+      if (!message.member.roles.cache.has(modRole)) {
+        return message.reply("у вас нет прав на запуск этой команды!");
+      }
+      else if (message.member.roles.cache.has(modRole) && command.permissions.includes("ADMINISTRATOR")) { 
+        return message.reply("у вас нет прав на запуск этой команды!");
+      }
+    }
   }
 
 
   try {
     await command.execute(message, args, client);
   } catch (error) {
+    console.error(error);
     if (error instanceof Discord.DiscordAPIError) { 
       return message.reply("API ошибка!\nЭто могло произойти по нескольким причинам:\n* У бота нет прав(самое частое)\n* Баги discord.js")
     }
-    console.error(error);
     message.reply('произошла ошибка во время запуска команды!');
   }
 

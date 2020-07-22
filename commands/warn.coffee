@@ -8,20 +8,20 @@ module.exports =
   name: "warn"
   execute: (message, args, client, sendUsage) ->  
     if !args[0]
-      await message.reply "укажите участника!"
+      return await message.reply "укажите участника!"
     userId = getMember args[0]
     if !userId
-      await message.reply "Укажите участника!"
+      return await message.reply "Укажите участника!"
 
     user = message.guild.members.cache.get userId
 
     if !user
-      await message.reply "Укажите участника!"
+      return await message.reply "Укажите участника!"
     
     reason = args.slice(1).join " "
 
     if !reason
-      await message.reply "Укажите причину"
+      return await message.reply "Укажите причину"
 
     console.dir user.user.id
 
