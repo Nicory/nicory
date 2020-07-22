@@ -125,5 +125,7 @@ require("./events/onJoin")(client);
 
 client.login(token);
 
+module.exports = client;
+
 const Backend = require("./backend/index.coffee");
 new Backend(client);

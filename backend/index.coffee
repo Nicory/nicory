@@ -1,6 +1,8 @@
 fastify = require "fastify"
 config = require "../config.json"
 
+pblc = require "./public.js"
+
 class Backend
   constructor: (@client) ->
     @app = fastify()
@@ -10,7 +12,7 @@ class Backend
     @app.listen(config.apiPort, -> console.log "Started server on port #{config.apiPort}")
 
   createRoutes: ->
-    @app.get("/", (req, res) -> "test")
+    @app.register(pblc, {prefix: "/public"})
 
 
 
