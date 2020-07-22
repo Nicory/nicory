@@ -9,6 +9,6 @@ module.exports =
     db.set("#{message.guild.id}_#{message.author.id}", "bio", args.join(" ")).then () -> message.react "✅"
 
   module: "Утилиты"
-  description: "Пинг бота до серверов Discord"
+  description: "Информация о себе"
   usage: "bio <текст>"
   aliases: ["био", "осебе"]
