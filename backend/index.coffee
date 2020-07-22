@@ -12,6 +12,7 @@ class Backend
     @app.listen(config.apiPort, -> console.log "Started server on port #{config.apiPort}")
 
   createRoutes: ->
+    @app.register require "fastify-cors"
     @app.register(pblc, {prefix: "/public"})
 
 
