@@ -127,5 +127,5 @@ client.login(token);
 
 module.exports = client;
 
-const Backend = require("./backend/index.coffee");
+const Backend = require("./backend/index.js");
 new Backend(client);

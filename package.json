@@ -12,9 +12,9 @@
   "license": "LicenseRef-LICENSE",
   "dependencies": {
     "chalk": "^4.1.0",
+    "cors": "^2.8.5",
     "discord.js": "^12.2.0",
-    "fastify": "^3.1.1",
-    "fastify-cors": "^4.1.0",
+    "express": "^4.17.1",
     "ffmpeg-static": "^4.2.5",
     "handlebars": "^4.7.6",
     "hastebin-gen": "^2.0.5",
