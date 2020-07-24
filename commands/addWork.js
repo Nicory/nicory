@@ -16,14 +16,23 @@ module.exports = {
     }
 
     if (args[1]==undefined) {
-      return await message.reply('укажите зарплату на этой работе!')
+      return await message.reply('укажите мин. зарплату на этой работе!')
+    }
+
+    if (args[2] == undefined) {
+      return await message.reply('укажите макс. зарплату на этой работе!')
     }
 
     let name = args[0];
-    let payment=parseInt(args[1]);
+    let min = parseInt(args[1]);
+    let max = parseInt(args[2]);
+
 
     let job = await db.get(`${message.guild.id}`, 'customJobs', []);
-    job.push({name: name, payment: payment});
+    if (job.filter(el => el.name == name).length != 0) { 
+      return message.reply("такая работа уже существует!");
+    }
+    job.push({name: name, min, max});
     await db.set(`${message.guild.id}`, 'customJobs', job);
     message.react("✅")
   },
