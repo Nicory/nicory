@@ -26,7 +26,7 @@ module.exports = {
           var nickname=user.Nickname
       }
 
-      let balance = await db.get(`${message.guild.id}_${message.author.id}`, 'money', 0);
+      let balance = await db.get(`${message.guild.id}_${user.id}`, 'money', 0);
       const embed = new Discord.MessageEmbed()
         .setTitle(`Баланс ${nickname}`)
         .setDescription(`${balance} <:credit:726813969167155320>`)

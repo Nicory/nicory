@@ -16,14 +16,14 @@ module.exports = {
 
     const user = message.guild.members.resolve(id)
     let amount = parseInt(args.slice(1))
-    let balance = await db.get(`${message.guild.id}_${message.author.id}`, 'money', parseInt(0));
+    let balance = await db.get(`${message.guild.id}_${user.id}`, 'money', parseInt(0));
     let int = parseInt(balance - amount)
 
     if (amount < 1) {
       return await message.reply('укажите сумму больше чем 0')
     }
 
-    await db.set(`${message.guild.id}_${message.author.id}`, 'money', int);
+    await db.set(`${message.guild.id}_${user.id}`, 'money', int);
     message.reply(`С баланса ${user} было снято ${amount} кредитов!`)
   },
   permissions: ["ADMINISTRATOR"]
