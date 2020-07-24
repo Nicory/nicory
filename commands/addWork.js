@@ -2,9 +2,9 @@ module.exports = {
   name: "addjob",
   hidden: false,
   module: "Экономика",
-  description: "Покажет магазин сервера",
-  aliases: [ 'добавить-роль', 'добавить-в-магазин' ],
-  usage: "addjob @пинг_роль <минимальная зарплата <максимальная зарплата>",
+  description: "Добавить работу",
+  aliases: [ 'добавить-работу' ],
+  usage: "addjob <название работы> <минимальная зарплата <максимальная зарплата>",
   cooldown: 2,
   args: false,
   async execute(message, args, client){
@@ -27,8 +27,23 @@ module.exports = {
     let min = parseInt(args[1]);
     let max = parseInt(args[2]);
 
+    if (!min || !max) { 
+      return await message.reply("укажи число, а не строку!");
+    }
+
+    if (min >= max) { 
+      return await message.reply("минимальная зарплата должна быть меньше максимальной!");
+    }
+    if (max <= 0 || max <= 0) { 
+      return await message.reply(
+        "мин/макс зарплаты должны быть больше нуля!"
+      );
+    }
 
     let job = await db.get(`${message.guild.id}`, 'customJobs', []);
+    if (job.length >= 25) { 
+      return message.reply("достигнут лимит работ(25)!")
+    }
     if (job.filter(el => el.name == name).length != 0) { 
       return message.reply("такая работа уже существует!");
     }
