@@ -6,23 +6,31 @@
   "scripts": {
     "test": "node unitTest.js",
     "bundle": "webpack --config webpack.config.js",
-    "start": "npm run bundle && node dist/bundle.js"
+    "start": "npm run bundle && node dist/bundle.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "author": "KislBall and NeloExt3",
   "license": "LicenseRef-LICENSE",
   "dependencies": {
     "chalk": "^4.1.0",
+    "cors": "^2.8.5",
     "discord.js": "^12.2.0",
-    "fastify": "^3.1.1",
+    "express": "^4.17.1",
     "ffmpeg-static": "^4.2.5",
     "handlebars": "^4.7.6",
+    "hastebin-gen": "^2.0.5",
+    "keyv": "^4.0.1",
+    "lodash": "^4.17.19",
     "mongodb": "^3.5.9",
+    "ms": "^2.1.2",
     "node-fetch": "^2.6.0",
     "node-html-to-image": "^3.0.1"
   },
   "devDependencies": {
     "coffee-loader": "^1.0.0",
     "coffeescript": "^2.5.1",
+    "eslint": "^7.5.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12",
     "webpack-node-externals": "^2.5.0"
