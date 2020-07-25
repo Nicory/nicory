@@ -40,7 +40,7 @@ module.exports = {
             },
             {
               name: "Я написана на:",
-              value: "CoffeeScript\nJavaScript",
+              value: "JavaScript",
               inline: true,
             },
             {

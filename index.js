@@ -1,30 +1,34 @@
-const fs = require('fs');
-const Discord = require('discord.js');
-const { prefix, token } = require('./config.json');
+const fs = require("fs");
+const Discord = require("discord.js");
+const { prefix, token } = require("./config.json");
 const isAsync = (f) => f.constructor.name === "AsyncFunction";
 const chalk = require("chalk");
-const db = require("./utils/database.coffee");
+const db = require("./utils/database.js");
 
 console.log(fs.readFileSync("./assets/banner.txt").toString() + "\n");
 
 const oldLog = console.log;
 console.log = (msg, primary = true) => {
-  fs.appendFileSync(`./logs/${new Date().toLocaleDateString().replace(/\//g, ".")}.log`, `[Nicory][LOG][${new Date().toLocaleString()}] ${msg}\n`);
-  if (primary) { 
+  fs.appendFileSync(
+    `./logs/${new Date().toLocaleDateString().replace(/\//g, ".")}.log`,
+    `[Nicory][LOG][${new Date().toLocaleString()}] ${msg}\n`
+  );
+  if (primary) {
     oldLog(
       `[${chalk.magenta("Nicory")}][${chalk.yellowBright(
         "LOG"
       )}][${new Date().toLocaleString()}] ${msg}`
     );
-    
   }
-}
+};
 
-const client = new Discord.Client({fetchAllMembers: true});
+const client = new Discord.Client({ fetchAllMembers: true });
 client.commands = new Discord.Collection();
 client.modules = {};
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js') || file.endsWith('.coffee'));
+const commandFiles = fs
+  .readdirSync("./commands")
+  .filter((file) => file.endsWith(".js") || file.endsWith(".js"));
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
@@ -39,18 +43,21 @@ for (const file of commandFiles) {
 
 const cooldowns = new Discord.Collection();
 
-client.once('ready', () => {
+client.once("ready", () => {
   console.log(`Logged in to Discord as ${client.user.tag}`);
 });
 
-client.on('message', async message => {
+client.on("message", async (message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
-  const command = client.commands.get(commandName)
-    || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+  const command =
+    client.commands.get(commandName) ||
+    client.commands.find(
+      (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
+    );
 
   if (!command) return;
 
@@ -79,7 +86,11 @@ client.on('message', async message => {
 
     if (now < expirationTime) {
       const timeLeft = (expirationTime - now) / 1000;
-      return message.reply(`подожди еще ${timeLeft.toFixed(1)} секунд перед использование команды \`${command.name}\`!`);
+      return message.reply(
+        `подожди еще ${timeLeft.toFixed(
+          1
+        )} секунд перед использование команды \`${command.name}\`!`
+      );
     }
   }
 
@@ -94,33 +105,37 @@ client.on('message', async message => {
 
     const modRole = await db.get(message.guild.id, "modRole", "");
 
-    if (!message.member.permissions.has(num)) { 
+    if (!message.member.permissions.has(num)) {
       if (!message.member.roles.cache.has(modRole)) {
         return message.reply("у вас нет прав на запуск этой команды!");
-      }
-      else if (message.member.roles.cache.has(modRole) && command.permissions.includes("ADMINISTRATOR")) { 
+      } else if (
+        message.member.roles.cache.has(modRole) &&
+        command.permissions.includes("ADMINISTRATOR")
+      ) {
         return message.reply("у вас нет прав на запуск этой команды!");
       }
     }
   }
-
 
   try {
     await command.execute(message, args, client);
   } catch (error) {
     console.error(error);
-    if (error instanceof Discord.DiscordAPIError) { 
-      return message.reply("API ошибка!\nЭто могло произойти по нескольким причинам:\n* У бота нет прав(самое частое)\n* Баги discord.js")
+    if (error instanceof Discord.DiscordAPIError) {
+      return message.reply(
+        "API ошибка!\nЭто могло произойти по нескольким причинам:\n* У бота нет прав(самое частое)\n* Баги discord.js"
+      );
     }
-    message.reply('произошла ошибка во время запуска команды!');
+    message.reply("произошла ошибка во время запуска команды!");
   }
 
-  console.log(`Executed command ${commandName} by ${message.author.tag}(${message.author.id}) in guild ${message.guild.name}(${message.guild.id}) with following message(${message.id}): ${message.content}`, false);
-
-  
+  console.log(
+    `Executed command ${commandName} by ${message.author.tag}(${message.author.id}) in guild ${message.guild.name}(${message.guild.id}) with following message(${message.id}): ${message.content}`,
+    false
+  );
 });
 
-require("./events/expEvent.coffee")(client);
+require("./events/expEvent.js")(client);
 require("./events/onJoin")(client);
 
 client.login(token);

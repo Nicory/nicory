@@ -1,10 +1,10 @@
 const express = require("express");
 const client = require("../");
 const config = require("../config.json");
-const db = require('../utils/database.coffee');
+const db = require("../utils/database.js");
 
 const publc = express.Router();
-publc.get("/commands", (req, res) => { 
+publc.get("/commands", (req, res) => {
   res.json(client.modules);
 });
 
@@ -13,7 +13,7 @@ publc.get("/stats", (req, res) => {
     prefix: config.prefix,
     guilds: client.guilds.cache.size,
     channels: client.channels.cache.size,
-    users: client.users.cache.size
+    users: client.users.cache.size,
   });
 });
 
@@ -23,10 +23,12 @@ publc.get("/auth/:token", async (req, res) => {
   if (!guildId) return res.status(401).end();
   const guild = client.guilds.cache.get(guildId);
   if (!guild) return res.status(401).end();
-  res.json({
-    icon: guild.iconURL(),
-    name: guild.name
-  }).end();
+  res
+    .json({
+      icon: guild.iconURL(),
+      name: guild.name,
+    })
+    .end();
 });
 
 module.exports = publc;

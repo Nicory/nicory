@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const db = require('../utils/database.coffee')
+const db = require('../utils/database.js')
 
 module.exports = client => {
   client.on("message", message => {
