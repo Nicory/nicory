@@ -3,66 +3,66 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
-const keyv = require("keyv"); // for caching and stuff
-const mongodb = require("mongodb");
-const config = require("../config.json");
+const keyv = require('keyv'); // for caching and stuff
+const mongodb = require('mongodb');
+const config = require('../config.json');
 
 const cache = {};
 
-module.exports = { 
-  get(id, key, def) {
-    if (!cache[key]) {
-      cache[key] = new keyv(config.cache, {namespace: key});
-    }
-    
-    const fromCache = await(cache[key].get(`${id}_${key}`));
+module.exports = {
+	async get(id, key, def) {
+		if (!cache[key]) {
+			cache[key] = new keyv(config.cache, { namespace: key });
+		}
 
-    if (fromCache) {
-      return fromCache;
-    }
+		const fromCache = await (cache[key].get(`${id}_${key}`));
 
-    const client = await(mongodb.MongoClient.connect(config.mongo));
-    const collection = client.db('nicory').collection(key);
+		if (fromCache) {
+			return fromCache;
+		}
 
-    const toBeCached = await(collection.findOne({id}));
-    if (!toBeCached) {
-      return def;
-    }
+		const client = await (mongodb.MongoClient.connect(config.mongo));
+		const collection = client.db('nicory').collection(key);
 
-    await(cache[key].set(`${id}`, toBeCached.value));
+		const toBeCached = await (collection.findOne({ id }));
+		if (!toBeCached) {
+			return def;
+		}
 
-    client.close();
+		await (cache[key].set(`${id}`, toBeCached.value));
 
-    return toBeCached.value;
-  },
+		client.close();
 
-  set(id, key, value) {
-    if (!cache[key]) {
-      cache[key] = new keyv(config.cache, {namespace: key});
-    }
+		return toBeCached.value;
+	},
 
-    const client = await(mongodb.MongoClient.connect(config.mongo));
-    const collection = client.db('nicory').collection(key);
+	async set(id, key, value) {
+		if (!cache[key]) {
+			cache[key] = new keyv(config.cache, { namespace: key });
+		}
 
-    collection.updateOne({id}, {$set: {value}}, {upsert: true});
+		const client = await (mongodb.MongoClient.connect(config.mongo));
+		const collection = client.db('nicory').collection(key);
 
-    client.close();
+		collection.updateOne({ id }, { $set: { value } }, { upsert: true });
 
-    return await(cache[key].set(`${id}`, value));
-  },
+		client.close();
 
-  delete(id, key) {
-    if (!cache[key]) {
-      cache[key] = new keyv(config.cache, {namespace: key});
-    }
+		return await (cache[key].set(`${id}`, value));
+	},
 
-    const client = await(mongodb.MongoClient.connect(config.mongo));
-    const collection = client.db('nicory').collection(key);
+	async delete(id, key) {
+		if (!cache[key]) {
+			cache[key] = new keyv(config.cache, { namespace: key });
+		}
 
-    collection.deleteMany({id});
+		const client = await (mongodb.MongoClient.connect(config.mongo));
+		const collection = client.db('nicory').collection(key);
 
-    client.close();
+		collection.deleteMany({ id });
 
-    return await(cache[key].delete(`${id}`));
-  }
+		client.close();
+
+		return await (cache[key].delete(`${id}`));
+	},
 };
