@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node unitTest.js",
-    "bundle": "webpack --config webpack.config.js",
-    "start": "npm run bundle && node dist/bundle.js",
+    "start": "node index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
