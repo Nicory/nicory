@@ -16,7 +16,8 @@ module.exports = {
 		const embed = new Discord.MessageEmbed()
 			.setColor(0xe155ff)
 			.setThumbnail(message.guild.iconURL())
-			.setTitle(`Магазин сервера ${message.guild.name}`);
+			.setTitle(`Магазин сервера ${message.guild.name}`)
+			.setDescription('Роль можно купить с помощью команды `buy <id или @упоминание>`');
 		if (roles.length === 0) {
 			embed.setDescription(
 				'Магазин пуст!',
@@ -25,9 +26,8 @@ module.exports = {
 		}
 
 		for (const role of Array.from(roles)) {
-			const rol = getRol(role.role);
-			const apiRole = message.guild.roles.cache.get(rol).name;
-			embed.addField(apiRole, `${role.price}`);
+			const apiRole = message.guild.roles.cache.get(role.id).name;
+			embed.addField(`${apiRole} (${role.id})`, `Цена: ${role.price}`);
 		}
 
 		return message.channel.send(embed);

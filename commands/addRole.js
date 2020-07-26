@@ -11,6 +11,7 @@ module.exports = {
 	async execute(message, args, client) {
 		const Discord = require('discord.js');
 		const db = require('../utils/database.js');
+		const getRole = require('../utils/getRole');
 
 		if (args[0] == undefined) {
 			return await message.reply('укажите роль!');
@@ -21,8 +22,13 @@ module.exports = {
 		}
 
 
-		const name = args[0].slice(3, -1);
+		const roleId = getRole(args[0]);
+		const role = message.guild.roles.cache.get(roleId);
 		const price = parseInt(args[1]);
+
+		if (!roleId || !role) {
+			return await message.reply('роль не найдена!');
+		}
 
 		if (!price) {
 			return await message.reply('укажи число, а не строку!');
@@ -30,12 +36,12 @@ module.exports = {
 
 		const roles = await db.get(`${message.guild.id}`, 'shop', []);
 		if (roles.length >= 25) {
-			return message.reply('достигнут лимит работ(25)!');
+			return message.reply('достигнут лимит ролей(25)!');
 		}
-		if (roles.filter((el) => el.name == name).length != 0) {
+		if (roles.filter((el) => el.id == roleId).length != 0) {
 			return message.reply('такая роль уже есть в магазине!');
 		}
-		roles.push({ name: name, price });
+		roles.push({ id: roleId, price });
 		await db.set(`${message.guild.id}`, 'shop', roles);
 		message.react('✅');
 	},
