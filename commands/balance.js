@@ -3,7 +3,7 @@ module.exports = {
 	hidden: false,
 	module: 'Экономика',
 	description: 'Покажет баланс юзера',
-	aliases: ['bal', 'Bal', 'Бал', 'бал', 'Баланс', 'баланс', 'balance'],
+	aliases: ['bal', 'бал', 'баланс'],
 	usage: 'balance',
 	cooldown: 0,
 	args: false,

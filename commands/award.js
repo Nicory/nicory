@@ -3,7 +3,7 @@ module.exports = {
 	hidden: false,
 	module: 'Экономика',
 	description: 'Выдаст указанное количество денег юзеру',
-	aliases: ['Award', 'Выдать', 'выдать', 'Дать', 'дать'],
+	aliases: ['выдать', 'дать'],
 	usage: 'award @пинг_юзера <количество денег>',
 	cooldown: 0,
 	args: false,

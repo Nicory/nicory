@@ -1,16 +1,16 @@
 module.exports = {
-  name: "Shop",
-  hidden: false,
-  module: "Экономика",
-  description: "Покажет магазин сервера",
-  aliases: [ 'shop', 'магаз', 'Магаз', 'магазин', 'Магазин', ],
-  usage: "shop",
-  cooldown: 2,
-  args: false,
-  async execute(message, args, client){
-    const Discord = require('discord.js')
-    const db = require('../utils/database.js')
-    const getRol = require('../utils/getRole')
+	name: 'shop',
+	hidden: false,
+	module: 'Экономика',
+	description: 'Покажет магазин сервера',
+	aliases: [ 'магаз', 'магазин' ],
+	usage: 'shop',
+	cooldown: 2,
+	args: false,
+	async execute(message, args, client) {
+		const Discord = require('discord.js');
+		const db = require('../utils/database.js');
+		const getRol = require('../utils/getRole');
 
 		const roles = await (db.get(message.guild.id, 'shop', []));
 		const embed = new Discord.MessageEmbed()
@@ -25,8 +25,8 @@ module.exports = {
 		}
 
 		for (const role of Array.from(roles)) {
-      const rol = getRol(role.role)
-      const apiRole = message.guild.roles.cache.get(rol).name
+			const rol = getRol(role.role);
+			const apiRole = message.guild.roles.cache.get(rol).name;
 			embed.addField(apiRole, `${role.price}`);
 		}
 

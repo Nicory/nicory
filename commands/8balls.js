@@ -1,9 +1,9 @@
 module.exports = {
-	name: '8balls',
+	name: '8ball',
 	hidden: false,
 	module: 'Веселости',
 	description: 'Задать вопрос боту',
-	aliases: ['balls', 'Balls', 'Шар', 'шар'],
+	aliases: ['ball', 'шар'],
 	usage: 'шар <ваш вопрос>',
 	cooldown: 2,
 	args: false,
