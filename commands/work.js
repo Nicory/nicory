@@ -13,12 +13,12 @@ module.exports = {
 		const jobs = await (db.get(`${message.guild.id}`, 'customJobs', []));
 
 		if (!args[0]) {
-			return await message.reply(`укажите работу!\nСписок доступных работ можно увидеть по команде: \`${config.prefix}jobs\``);
+			return await message.reply(`укажите работу!\nСписок доступных работ можно увидеть по команде: \`jobs\``);
 
 		}
 
 		if (jobs.filter((el) => el.name === args[0]).length === 0) {
-			return await message.reply(`эта работа не найдена!\nСписок доступных работ можно увидеть по команде: \`${config.prefix}jobs\``);
+			return await message.reply(`эта работа не найдена!\nСписок доступных работ можно увидеть по команде: \`jobs\``);
 		}
 
 		const job = jobs.filter((el) => el.name === args[0])[0];

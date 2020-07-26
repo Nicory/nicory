@@ -1,5 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const config = require('../config.json');
+const db = require("../utils/database");
 
 const translations = {
 	'ADMINISTRATOR': 'Администратор',
@@ -43,7 +44,9 @@ function perms(command) {
 
 module.exports = {
 	name: 'help',
-	async execute(message, args, client) {
+  async execute(message, args, client) {
+    const prefix = await db.get(message.guild.id, 'prefix', config.prefix);
+
 		const embed = new MessageEmbed()
 			.setColor(0xe155ff)
 			.setTitle('Помощь по командам')
@@ -54,9 +57,9 @@ module.exports = {
 				const mdl = client.modules[moduleName];
 				let content = '';
 				for (const command of mdl) {
-					content += '`' + config.prefix + command.name + '` ';
+					content += '`' + prefix + command.name + '` ';
 				}
-				embed.addField(`${moduleName}(${config.prefix}help ${moduleName})`, content);
+				embed.addField(`${moduleName}(${prefix}help ${moduleName})`, content);
 			}
 		}
 		else { // sending module specific help
@@ -68,7 +71,7 @@ module.exports = {
 			for (const command of mdl) {
 				const aliases = command.aliases;
 				embed.addField(
-					`${config.prefix}${command.name}`,
+					`${prefix}${command.name}`,
 					`${command.description ? command.description : '<нет информации>'}\n\n**Использование**: \`${
 						command.usage ? command.usage : '<нет информации>'
 					}\`\n**Алиасы**: ${aliases.map(a => '`' + a + '`').join(' ')}\n**Кулдаун**: ${command.cooldown || 0}s\n${perms(command)}`,

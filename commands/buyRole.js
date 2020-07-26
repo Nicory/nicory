@@ -9,13 +9,13 @@ module.exports = {
 		const roleId = getRole(args[0]);
 
 		if (!args[0] || !roleId) {
-			return await message.reply(`укажите роль!\nЧтоб просмотреть магазин ролей пропишите: \`${config.prefix}shop\``);
+			return await message.reply(`укажите роль!\nЧтоб просмотреть магазин ролей пропишите: \`shop\``);
 		}
 
 		const apiRole = message.guild.roles.cache.get(roleId);
 
 		if (roles.filter((el) => el.id === roleId).length === 0 || !apiRole) {
-			return await message.reply(`эта роль не найдена!\nЧтоб просмотреть магазин ролей пропишите: \`${config.prefix}shop\``);
+			return await message.reply(`эта роль не найдена!\nЧтоб просмотреть магазин ролей пропишите: \`shop\``);
 		}
 
 		const role = roles.filter((el) => el.id == roleId)[0];
