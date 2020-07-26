@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const { defPrefix, token } = require('./config.json');
+const { prefix: defPrefix, token } = require('./config.json');
 const isAsync = (f) => f.constructor.name === 'AsyncFunction';
 const chalk = require('chalk');
 const db = require('./utils/database.js');
@@ -48,7 +48,7 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
-  const prefix = await db.get(message.guild.id ?? undefined, 'prefix', defPrefix);
+  const prefix = await db.get(message.guild.id, 'prefix', defPrefix);
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
