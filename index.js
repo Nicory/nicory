@@ -48,7 +48,7 @@ client.once('ready', () => {
 });
 
 client.on('message', async (message) => {
-  const prefix = await db.get(message.guild.id, 'prefix', defPrefix);
+	const prefix = await db.get(message.guild.id, 'prefix', defPrefix);
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);

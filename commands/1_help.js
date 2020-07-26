@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const config = require('../config.json');
-const db = require("../utils/database");
+const db = require('../utils/database');
 
 const translations = {
 	'ADMINISTRATOR': 'Администратор',
@@ -44,15 +44,15 @@ function perms(command) {
 
 module.exports = {
 	name: 'help',
-  async execute(message, args, client) {
-    const prefix = await db.get(message.guild.id, 'prefix', config.prefix);
+	async execute(message, args, client) {
+		const prefix = await db.get(message.guild.id, 'prefix', config.prefix);
 
-    const embed = new MessageEmbed()
-      .setColor(0xe155ff)
-      .setTitle('Помощь по командам')
-      .setThumbnail(client.user.avatarURL())
-      .setFooter('By: KislBall and NeloExt3', client.user.avatarURL())
-      .setDescription(`Мой префикс здесь - \`${prefix}\`.\nВы можете сменить префикс командой \`prefix\``);
+		const embed = new MessageEmbed()
+			.setColor(0xe155ff)
+			.setTitle('Помощь по командам')
+			.setThumbnail(client.user.avatarURL())
+			.setFooter('By: KislBall and NeloExt3', client.user.avatarURL())
+			.setDescription(`Мой префикс здесь - \`${prefix}\`.\nВы можете сменить префикс командой \`prefix\``);
 		if (!args[0]) { // sending main help
 			for (const moduleName in client.modules) {
 				const mdl = client.modules[moduleName];
