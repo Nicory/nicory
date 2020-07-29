@@ -65,4 +65,28 @@ module.exports = client => {
 
     logChannel.send(embed)
   });
+  client.on('guildMemberAdd', async member => {
+    // Получение канала для логов из бд
+    const getID = await db.get(`${member.guild.id}`, 'logChannel')
+    logChannel=member.guild.channels.cache.get(getID)
+
+    const embed = new Discord.MessageEmbed()
+    .setAuthor('На сервер зашёл участник!')
+    .setDescription(`${member}`)
+    .setFooter(`ID ${member.id}`)
+    .setTimestamp()
+    logChannel.send(embed)
+  });
+  client.on('guildMemberRemove', async member => {
+    // Получение канала для логов из бд
+    const getID = await db.get(`${member.guild.id}`, 'logChannel')
+    logChannel=member.guild.channels.cache.get(getID)
+
+    const embed = new Discord.MessageEmbed()
+    .setAuthor('Участник покинул сервер!')
+    .setDescription(`${member}`)
+    .setFooter(`ID ${member.id}`)
+    .setTimestamp()
+    logChannel.send(embed)
+  });
 };
