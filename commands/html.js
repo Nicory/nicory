@@ -1,5 +1,5 @@
 const htmlToImage = require('node-html-to-image');
-const removeCodeBlock = require("../utils/removeCodeBlock");
+const removeCodeBlock = require('../utils/removeCodeBlock');
 
 module.exports = {
 	name: 'html',

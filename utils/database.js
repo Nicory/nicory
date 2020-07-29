@@ -5,15 +5,15 @@ const config = require('../config.json');
 const cache = {};
 
 module.exports = {
-  /**
+	/**
    * Получить значение из БД
-   * 
+   *
    * @template defType
-   * 
-   * @param {string} id айди 
+   *
+   * @param {string} id айди
    * @param {string} key поле
    * @param {defType} def значение по умолчанию
-   * 
+   *
    * @returns {Promise<defType>}
    */
 	async get(id, key, def) {
@@ -42,15 +42,15 @@ module.exports = {
 		return toBeCached.value;
 	},
 
-  /**
+	/**
    * Установка значения в БД
-   * 
+   *
    * @template T
-   * 
+   *
    * @param {string} id айди
    * @param {string} key поле
    * @param {T} value значение
-   * 
+   *
    * @returns {Promise<T>}
    */
 	async set(id, key, value) {
@@ -68,7 +68,7 @@ module.exports = {
 		return await (cache[key].set(`${id}`, value));
 	},
 
-/**
+	/**
  * Удаление ключа в БД
  *
  * @param {string} id айди
