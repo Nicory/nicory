@@ -7,9 +7,7 @@
     "test": "node unitTest.js",
     "start": "node index.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "docker": "sudo docker build . --tag nicory && sudo docker run nicory",
-    "docker:prod": "sudo docker build . --tag nicory && sudo docker run -it --network host nicory"
+    "lint:fix": "eslint . --fix"
   },
   "author": "KislBall and NeloExt3",
   "license": "LicenseRef-LICENSE",
