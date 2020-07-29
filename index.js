@@ -55,6 +55,7 @@ client.on('messageUpdate', async (oldMsg, newMsg) => {
 
 require('./events/expEvent.js')(client);
 require('./events/onJoin')(client);
+require('./events/logs.js')(client);
 
 client.login(token);
 
