@@ -7,7 +7,8 @@
     "test": "node unitTest.js",
     "start": "node index.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "docker": "sudo docker build . --tag nicory && sudo docker run nicory"
   },
   "author": "KislBall and NeloExt3",
   "license": "LicenseRef-LICENSE",
@@ -16,7 +17,6 @@
     "cors": "^2.8.5",
     "discord.js": "^12.2.0",
     "express": "^4.17.1",
-    "ffmpeg-static": "^4.2.5",
     "handlebars": "^4.7.6",
     "hastebin-gen": "^2.0.5",
     "keyv": "^4.0.1",
@@ -27,11 +27,6 @@
     "node-html-to-image": "^3.0.1"
   },
   "devDependencies": {
-    "coffee-loader": "^1.0.0",
-    "coffeescript": "^2.5.1",
-    "eslint": "^7.5.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-node-externals": "^2.5.0"
+    "eslint": "^7.5.0"
   }
 }

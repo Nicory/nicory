@@ -1,7 +1,10 @@
 FROM node:14
-WORKDIR /usr/app/src
+LABEL maintainer="KislBall <kislball@yahoo.com>"
+WORKDIR /app
 COPY package*.json ./
-RUN mkdir /root/.cache && mkdir /root/.cache/ffmpeg-static-nodejs && npm install
+# installing jq for getting data from json file
+RUN apt update && apt install jq -y
+RUN mkdir -p /root/.cache && mkdir -p /root/.cache/ffmpeg-static-nodejs && npm ci --only=production
+RUN mkdir /app/logs
 COPY . .
-RUN npm run bundle
-CMD ["node", "./dist/bundle.js"]
+CMD ["npm", "run", "start"]
