@@ -7,7 +7,9 @@ module.exports = client => {
 
 		// Получение канала для логов из бд
 		const getID = await db.get(`${message.guild.id}`, 'logChannel');
-		const logChannel = message.guild.channels.cache.get(getID);
+    const logChannel = message.guild.channels.cache.get(getID);
+    
+    if (!logChannel) return;
 
 
 		if (message.author.bot) {
