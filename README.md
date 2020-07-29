@@ -1,4 +1,4 @@
-<img src="nicory.png" alt="drawing" width="50"/>
+<img src="nicory.png" alt="drawing"/>
 
 # NicoryBot
 > Универсальный Discord-бот для вашего сервера!  
