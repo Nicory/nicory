@@ -40,8 +40,8 @@ module.exports = {
 
 		return db
 			.set(`${message.guild.id}_${member.user.id}`, 'warns', final)
-      .then(() => message.react('✅'))
-      .then(() => client.emit("nicory_unwarn", {id: args[0], moderator: message.member, member}));
+			.then(() => message.react('✅'))
+			.then(() => client.emit('nicory_unwarn', { id: args[0], moderator: message.member, member }));
 	},
 
 	module: 'Модерация',

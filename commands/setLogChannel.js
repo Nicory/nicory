@@ -10,17 +10,17 @@ module.exports = {
 	async execute(message, args, client) {
 		const Discord = require('discord.js');
 		const db = require('../utils/database.js');
-		const getChannel = require('../utils/getChannel.js')
+		const getChannel = require('../utils/getChannel.js');
 
-		const channel = getChannel(args[0].slice(2, -1))
-		message.reply(channel)
+		const channel = getChannel(args[0].slice(2, -1));
+		message.reply(channel);
 		await db.get(
 			`${message.guild.id}`,
 			'logChannel',
 		);
 
 		await db.set(`${message.guild.id}`, 'logChannel', channel);
-		message.react('✅')
+		message.react('✅');
 	},
 	permissions: ['ADMINISTRATOR'],
 };

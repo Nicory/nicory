@@ -38,20 +38,20 @@ module.exports = {
 			reason,
 			id: randStr(),
 			date: new Date(),
-    });
-    
+		});
 
-		return db.set(`${message.guild.id}_${user.user.id}`, "warns", warns)
-      .then(() => message.react("✅"))
-      .then(() =>
-        client.emit("nicory_warn", {
-          moderator: message.author.id,
-          reason,
-          id: randStr(),
-          date: new Date(),
-          user
-        })
-      );
+
+		return db.set(`${message.guild.id}_${user.user.id}`, 'warns', warns)
+			.then(() => message.react('✅'))
+			.then(() =>
+				client.emit('nicory_warn', {
+					moderator: message.author.id,
+					reason,
+					id: randStr(),
+					date: new Date(),
+					user,
+				}),
+			);
 	},
 
 	module: 'Модерация',

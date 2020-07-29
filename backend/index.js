@@ -3,7 +3,7 @@ const publc = require('./public');
 const priv = require('./private');
 const config = require('../config.json');
 const cors = require('cors');
-const auth = require("./authMiddleware");
+const auth = require('./authMiddleware');
 
 class Backend {
 	constructor(client) {
@@ -15,8 +15,8 @@ class Backend {
 	}
 
 	registerRoutes() {
-    this.app.use('/public', publc);
-    this.app.use('/private', auth, priv);
+		this.app.use('/public', publc);
+		this.app.use('/private', auth, priv);
 	}
 }
 
