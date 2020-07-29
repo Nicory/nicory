@@ -3,7 +3,7 @@ module.exports = {
 	hidden: false,
 	module: 'Модерация',
 	description: 'Кикнуть участника',
-	aliases: ['кик', 'Кик', 'Kick'],
+	aliases: ['кик'],
 	usage: 'kick <юзер> [причина]',
 	args: false,
 	permissions: ['KICK_MEMBERS'],

@@ -3,7 +3,7 @@ module.exports = {
 	hidden: false,
 	module: 'Веселости',
 	description: 'Выберет рандомное число',
-	aliases: ['ранд', 'Ранд', 'Rand', 'рандом', 'Рандом', 'Random' ],
+	aliases: ['ранд', 'рандом' ],
 	usage: 'ранд <число>',
 	cooldown: 0,
 	args: false,

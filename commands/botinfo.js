@@ -1,5 +1,6 @@
 const ms = require('ms');
 const haste = require('hastebin-gen');
+const db = require('../utils/database');
 
 function getHasteLink(usage) {
 	let str = `Кучей занято: ${usage.heapTotal / 1024 / 1024}MB\n`;
@@ -50,7 +51,7 @@ module.exports = {
 				},
 				{
 					name: 'Серверная информация:',
-					value: `Префикс: ${config.prefix}\n`,
+					value: `Префикс: ${await db.get(message.guild.id, 'prefix', config.prefix)}\n`,
 					inline: false,
 				},
 				{

@@ -3,7 +3,7 @@ module.exports = {
 	hidden: false,
 	module: 'Экономика',
 	description: 'Украсть деньги у юзера с шансом 50%',
-	aliases: ['Украсть', 'украсть', 'Steal'],
+	aliases: ['украсть'],
 	usage: 'steal @пинг_юзера',
 	cooldown: 0,
 	args: false,
