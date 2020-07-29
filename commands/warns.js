@@ -37,12 +37,12 @@ module.exports = {
 			return message.channel.send(embed);
 		}
 
-		for (const warn of Array.from(warns)) {
+    for (const warn of Array.from(warns)) {
 			embed.addField(
 				`ID: ${warn.id}; DATE: ${new Date(
 					warn.date,
 				).toLocaleString()}; MODER: ${
-					message.guild.members.cache.get(warn.moderator).user.tag
+					message.guild.members.cache.get(warn.moderator)?.user?.tag ?? "<нет данных>"
 				}`,
 				warn.reason,
 			);

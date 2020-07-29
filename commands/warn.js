@@ -32,19 +32,26 @@ module.exports = {
 			return await (message.reply('Укажите причину'));
 		}
 
-		console.dir(user.user.id);
-
 		const warns = await db.get(`${message.guild.id}_${user.user.id}`, 'warns', []);
 		warns.push({
 			moderator: message.author.id,
 			reason,
 			id: randStr(),
 			date: new Date(),
-		});
+    });
+    
 
-		return db
-			.set(`${message.guild.id}_${user.user.id}`, 'warns', warns)
-			.then(() => message.react('✅'));
+		return db.set(`${message.guild.id}_${user.user.id}`, "warns", warns)
+      .then(() => message.react("✅"))
+      .then(() =>
+        client.emit("nicory_warn", {
+          moderator: message.author.id,
+          reason,
+          id: randStr(),
+          date: new Date(),
+          user
+        })
+      );
 	},
 
 	module: 'Модерация',
