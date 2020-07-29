@@ -4,11 +4,20 @@ const db = require('../utils/database.js');
 
 const cooldowns = new Discord.Collection();
 
-module.exports = async (message, client) => {
-	const prefix = await db.get(message.guild.id, 'prefix', defPrefix);
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
+const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-	const args = message.content.slice(prefix.length).trim().split(/ +/);
+module.exports = async (message, client) => {
+  const prefix = await db.get(message.guild.id, 'prefix', defPrefix);
+  
+  const prefixRegex = new RegExp(
+    `^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`
+  );
+  if (!prefixRegex.test(message.content)) return;
+
+	if (message.author.bot) return;
+
+  const [, matchedPrefix] = message.content.match(prefixRegex);
+	const args = message.content.slice(matchedPrefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
 	const command =
