@@ -1,8 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 const keyv = require('keyv'); // for caching and stuff
 const mongodb = require('mongodb');
 const config = require('../config.json');
