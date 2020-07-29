@@ -1,1 +1,1 @@
-module.exports = code => code.replace(/(`|```)(js)?/gi, "");
+module.exports = code => code.replace(/(`|```)(.+)?/gi, "");
