@@ -1,13 +1,11 @@
 const Discord = require("discord.js");
 const GuildMemberContext = require("./GuildMemberContext");
-const BaseContext = require("./BaseContext");
 
 /**
  * @class
- * @implements {BaseContext}
  * @classdesc Базовый контекст вызова для гильдии
  */
-class GuildContext extends BaseContext{
+class GuildContext {
   /**
    * @param {Discord.Guild} guild - участник для создания контекста
    */

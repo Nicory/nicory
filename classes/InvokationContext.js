@@ -1,13 +1,12 @@
 const Discord = require("discord.js");
 const GuildMemberContext = require("./GuildMemberContext");
-const BaseContext = require("./BaseContext");
+const GuildContext = require("./GuildContext");
 
 /**
  * @class
  * @classdesc Базовый контекст вызова для кастом команд
- * @implements {BaseContext}
  */
-class InvokationContext extends BaseContext { 
+class InvokationContext { 
   /**
    * @param {Discord.Message} message - сообщение для создания контекста
    */

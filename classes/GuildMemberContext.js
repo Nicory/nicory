@@ -1,13 +1,11 @@
 const Discord = require("discord.js");
 const db = require('../utils/database');
-const BaseContext = require("./BaseContext");
 
 /**
  * @class
  * @classdesc Базовый контекст вызова для участника
- * @implements {BaseContext}
  */
-class GuildMemberContext extends BaseContext {
+class GuildMemberContext {
   /**
    * @param {Discord.GuildMember} member - участник для создания контекста
    */
@@ -22,14 +20,14 @@ class GuildMemberContext extends BaseContext {
    */
   async getContext() {
     return {
-      id: this.member.member.user.id,
-      mention: this.member.member.toString(),
-      nickname: this.member.member.nickname ?? this.member.member.user.username,
-      tag: this.member.member.user.tag,
+      id: this.member.user.id,
+      mention: this.member.toString(),
+      nickname: this.member.nickname ?? this.member.user.username,
+      tag: this.member.user.tag,
       bot: this.member.user.bot,
       name: this.member.user.username,
       discriminator: this.member.user.discriminator,
-      joinedAt: this.member.member.joinedAt,
+      joinedAt: this.member.joinedAt,
       createdAt: this.member.user.createdAt,
       avatar: this.member.user.avatarURL(),
       bio: await db.get(`${this.member.guild.id}_${this.member.user.id}`, 'bio', "Отсутствует"),
