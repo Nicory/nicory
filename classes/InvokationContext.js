@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const GuildMemberContext = require("./GuildMemberContext");
 const GuildContext = require("./GuildContext");
+const MessageContext = require("./MessageContext");
 
 /**
  * @class
@@ -22,7 +23,8 @@ class InvokationContext {
   async getContext() { 
     return {
       guild: await (new GuildContext(this.message.guild)).getContext(),
-      member: await (new GuildMemberContext(this.message.member)).getContext()
+      member: await (new GuildMemberContext(this.message.member)).getContext(),
+      message: await (new MessageContext(this.message)).getContext()
     }
   }
 }
