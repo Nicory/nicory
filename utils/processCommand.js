@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const { prefix: defPrefix } = require('../config.json');
 const db = require('../utils/database.js');
+const canRun = require("../utils/canRun");
 
 const cooldowns = new Discord.Collection();
 
@@ -64,25 +65,8 @@ module.exports = async (message, client) => {
 	timestamps.set(message.author.id, now);
 	setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
-	if (command.permissions) {
-		let num = 0;
-		for (const perm of command.permissions) {
-			num = num | Discord.Permissions.FLAGS[perm];
-		}
-
-		const modRole = await db.get(message.guild.id, 'modRole', '');
-
-		if (!message.member.permissions.has(num)) {
-			if (!message.member.roles.cache.has(modRole)) {
-				return message.reply('у вас нет прав на запуск этой команды!');
-			}
-			else if (
-				message.member.roles.cache.has(modRole) &&
-        command.permissions.includes('ADMINISTRATOR')
-			) {
-				return message.reply('у вас нет прав на запуск этой команды!');
-			}
-		}
+	if (!await canRun(command, message)) {
+		return message.reply('у вас нет прав на запуск этой команды!');
 	}
 
 	try {
