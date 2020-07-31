@@ -17,5 +17,5 @@ module.exports = (tpl, ctx) => {
   for (let i = 0; i < Object.keys(helpers).length; i++) { 
     Handlebars.registerHelper(Object.keys(helpers)[i], Object.values(helpers)[i]);
   }
-  return Handlebars.compile(tpl)(ctx);
+  return Handlebars.compile(tpl, {noEscape: true})(ctx);
 };
