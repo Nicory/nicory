@@ -5,13 +5,13 @@ const processCommand = require('./utils/processCommand');
 
 console.log(fs.readFileSync('./assets/banner.txt').toString() + '\n');
 
-require("./utils/logging")();
+require('./utils/logging')();
 
 const client = new Discord.Client({ fetchAllMembers: true });
 client.commands = new Discord.Collection();
 client.modules = {};
 
-require("./utils/loadCommands")(client);
+require('./utils/loadCommands')(client);
 
 client.once('ready', () => {
 	console.log(`Logged in to Discord as ${client.user.tag}`);

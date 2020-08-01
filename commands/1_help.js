@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const config = require('../config.json');
 const db = require('../utils/database');
-const canRun = require("../utils/canRun");
+const canRun = require('../utils/canRun');
 
 const translations = {
 	'ADMINISTRATOR': 'Администратор',
@@ -54,38 +54,39 @@ module.exports = {
 			.setThumbnail(client.user.avatarURL())
 			.setFooter('By: KislBall and NeloExt3', client.user.avatarURL())
 			.setDescription(`Мой префикс здесь - \`${prefix}\`, но также вы можете @упомянуть меня.\nВы можете сменить префикс командой \`prefix\``);
-    try {
-      if (!args[0]) { // sending main help
-        for (const moduleName in client.modules) {
-          const mdl = client.modules[moduleName];
-          let content = '';
-          for (const command of mdl) {
-            if (!await canRun(command, message)) continue;
-            content += '`' + prefix + command.name + '` ';
-          }
-          embed.addField(`${moduleName}(${prefix}help ${moduleName})`, content);
-        }
-      }
-      else { // sending module specific help
-        const moduleName = capitalizeFirstLetter(args[0]);
-        if (!client.modules[moduleName]) return message.react('❌');
-        embed.setTitle(`Команды модуля ${moduleName}`);
-        const mdl = client.modules[moduleName];
+		try {
+			if (!args[0]) { // sending main help
+				for (const moduleName in client.modules) {
+					const mdl = client.modules[moduleName];
+					let content = '';
+					for (const command of mdl) {
+						if (!await canRun(command, message)) continue;
+						content += '`' + prefix + command.name + '` ';
+					}
+					embed.addField(`${moduleName}(${prefix}help ${moduleName})`, content);
+				}
+			}
+			else { // sending module specific help
+				const moduleName = capitalizeFirstLetter(args[0]);
+				if (!client.modules[moduleName]) return message.react('❌');
+				embed.setTitle(`Команды модуля ${moduleName}`);
+				const mdl = client.modules[moduleName];
 
-        for (const command of mdl) {
-          if (!await canRun(command, message)) continue;
-          const aliases = command.aliases;
-          embed.addField(
-            `${prefix}${command.name}`,
-            `${command.description ? command.description : '<нет информации>'}\n\n**Использование**: \`${
-            command.usage ? command.usage : '<нет информации>'
-            }\`\n**Алиасы**: ${aliases.map(a => '`' + a + '`').join(' ')}\n**Кулдаун**: ${command.cooldown || 0}s\n${perms(command)}`,
-          );
-        }
-      }
-    } catch (e) { 
-
-    }
+				for (const command of mdl) {
+					if (!await canRun(command, message)) continue;
+					const aliases = command.aliases;
+					embed.addField(
+						`${prefix}${command.name}`,
+						`${command.description ? command.description : '<нет информации>'}\n\n**Использование**: \`${
+							command.usage ? command.usage : '<нет информации>'
+						}\`\n**Алиасы**: ${aliases.map(a => '`' + a + '`').join(' ')}\n**Кулдаун**: ${command.cooldown || 0}s\n${perms(command)}`,
+					);
+				}
+			}
+		}
+		catch (e) {
+			translations;
+		}
 		message.channel.send(embed);
 	},
 	module: 'Основное',
