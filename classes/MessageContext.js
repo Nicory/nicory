@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const GuildMemberContext = require("./GuildMemberContext");
 const GuildContext = require("./GuildContext");
 const GuildChannelContext = require("./GuildChannelContext");
+const GuildRoleContext = require("./GuildRoleContext");
 
 /**
  * @class
@@ -31,6 +32,11 @@ class MessageContext {
       if (typeof mention == "string") continue;
       channelMentions.push(await new GuildChannelContext(mention).getContext());
     }
+    const roleMentions = [];
+    for (const mention of this.message.mentions.roles.array((e) => e)) {
+      if (typeof mention == "string") continue;
+      roleMentions.push(await new GuildRoleContext(mention).getContext());
+    }
     return {
       id: this.message.id,
       content: this.message.content,
@@ -40,7 +46,8 @@ class MessageContext {
       url: this.message.url,
       mentions: {
         members: memberMentions,
-        channels: channelMentions
+        channels: channelMentions,
+        roles: roleMentions
       },
       channel: await new GuildChannelContext(this.message.channel).getContext(),
     };

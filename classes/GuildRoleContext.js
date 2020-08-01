@@ -22,13 +22,12 @@ class GuildRoleContext {
     return {
       id: this.role.id,
       name: this.role.name,
-      guild: await new GuildContext(this.role.guild).getContext(),
       mention: this.role.toString(),
       position: this.role.position,
       managed: this.role.managed,
       hoisted: this.role.hoist,
       color: this.role.color,
-      permissionsRaw: this.role.permissions.bitfield,
+      permissionsRaw: this.role.permissions?.bitfield ?? 0,
       permissions: this.role.permissions
     };
   }

@@ -19,6 +19,11 @@ class GuildMemberContext {
    * @returns {Promise<Object<string, any>>}
    */
   async getContext() {
+    const roles = [];
+    for (const role of roles) {
+      roles.push(await new GuildRoleContext(role).getContext());
+    }
+
     return {
       id: this.member.user.id,
       mention: this.member.toString(),
@@ -31,7 +36,8 @@ class GuildMemberContext {
       createdAt: this.member.user.createdAt,
       avatar: this.member.user.avatarURL(),
       bio: await db.get(`${this.member.guild.id}_${this.member.user.id}`, 'bio', "Отсутствует"),
-      exp: await db.get(`${this.member.guild.id}_${this.member.user.id}`, 'exp', 0)
+      exp: await db.get(`${this.member.guild.id}_${this.member.user.id}`, 'exp', 0),
+      roles
     }
   }
 }
