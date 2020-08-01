@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const { prefix: defPrefix } = require('../config.json');
 const db = require('../utils/database.js');
 const canRun = require('../utils/canRun');
+const getCommandByName = require('./getCommandByName');
 
 const cooldowns = new Discord.Collection();
 
@@ -21,11 +22,7 @@ module.exports = async (message, client) => {
 	const args = message.content.slice(matchedPrefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
-	const command =
-    client.commands.get(commandName) ||
-    client.commands.find(
-    	(cmd) => cmd.aliases && cmd.aliases.includes(commandName),
-    );
+  const command = getCommandByName(commandName, client);
 
 	if (!command) return;
 
