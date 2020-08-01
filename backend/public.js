@@ -32,7 +32,7 @@ publc.get('/auth/:token', async (req, res) => {
     roles[role[1].name] = { id: role[1].id, managable: true };
   }
   for (const channel of guild.channels.cache.array(e => e)) { 
-    channels[channel.name] = channel.id;
+    channels[channel.name] = { id: channel.id, type: channel.type };
   }
 	if (!guild) return res.status(401).end();
 	res
