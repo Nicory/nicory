@@ -1,5 +1,5 @@
-const ejs = require("ejs");
+const ejs = require('ejs');
 
 module.exports = (tpl, ctx) => {
-  return ejs.render(tpl, ctx);
+	return ejs.render(tpl, ctx);
 };

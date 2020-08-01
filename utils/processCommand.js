@@ -22,7 +22,7 @@ module.exports = async (message, client) => {
 	const args = message.content.slice(matchedPrefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
-  const command = getCommandByName(commandName, client);
+	const command = getCommandByName(commandName, client);
 
 	if (!command) return;
 
