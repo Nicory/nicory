@@ -7,7 +7,7 @@ const GuildMemberContext = require("./GuildMemberContext");
  */
 class GuildContext {
   /**
-   * @param {Discord.Guild} guild - участник для создания контекста
+   * @param {Discord.Guild} guild - гильдия для создания контекста
    */
   constructor(guild) {
     this.guild = guild;
