@@ -1,21 +1,28 @@
 const Discord = require('discord.js');
 const { prefix: defPrefix } = require('../config.json');
 const db = require('../utils/database.js');
+const canRun = require('../utils/canRun');
+const getCommandByName = require('./getCommandByName');
 
 const cooldowns = new Discord.Collection();
 
+const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 module.exports = async (message, client) => {
 	const prefix = await db.get(message.guild.id, 'prefix', defPrefix);
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-	const args = message.content.slice(prefix.length).trim().split(/ +/);
+	const prefixRegex = new RegExp(
+		`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`,
+	);
+	if (!prefixRegex.test(message.content)) return;
+
+	if (message.author.bot) return;
+
+	const [, matchedPrefix] = message.content.match(prefixRegex);
+	const args = message.content.slice(matchedPrefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
-	const command =
-    client.commands.get(commandName) ||
-    client.commands.find(
-    	(cmd) => cmd.aliases && cmd.aliases.includes(commandName),
-    );
+	const command = getCommandByName(commandName, client);
 
 	if (!command) return;
 
@@ -55,25 +62,8 @@ module.exports = async (message, client) => {
 	timestamps.set(message.author.id, now);
 	setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
-	if (command.permissions) {
-		let num = 0;
-		for (const perm of command.permissions) {
-			num = num | Discord.Permissions.FLAGS[perm];
-		}
-
-		const modRole = await db.get(message.guild.id, 'modRole', '');
-
-		if (!message.member.permissions.has(num)) {
-			if (!message.member.roles.cache.has(modRole)) {
-				return message.reply('у вас нет прав на запуск этой команды!');
-			}
-			else if (
-				message.member.roles.cache.has(modRole) &&
-        command.permissions.includes('ADMINISTRATOR')
-			) {
-				return message.reply('у вас нет прав на запуск этой команды!');
-			}
-		}
+	if (!await canRun(command, message)) {
+		return message.reply('у вас нет прав на запуск этой команды!');
 	}
 
 	try {

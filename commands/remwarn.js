@@ -1,8 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 const getMember = require('../utils/getMember.js');
 const db = require('../utils/database.js');
 const Discord = require('discord.js');
@@ -40,7 +35,8 @@ module.exports = {
 
 		return db
 			.set(`${message.guild.id}_${member.user.id}`, 'warns', final)
-			.then(() => message.react('✅'));
+			.then(() => message.react('✅'))
+			.then(() => client.emit('nicory_unwarn', { id: args[0], moderator: message.member, member }));
 	},
 
 	module: 'Модерация',

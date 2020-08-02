@@ -1,8 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 const keyv = require('keyv'); // for caching and stuff
 const mongodb = require('mongodb');
 const config = require('../config.json');
@@ -10,6 +5,17 @@ const config = require('../config.json');
 const cache = {};
 
 module.exports = {
+	/**
+   * Получить значение из БД
+   *
+   * @template defType
+   *
+   * @param {string} id айди
+   * @param {string} key поле
+   * @param {defType} def значение по умолчанию
+   *
+   * @returns {Promise<defType>}
+   */
 	async get(id, key, def) {
 		if (!cache[key]) {
 			cache[key] = new keyv(config.cache, { namespace: key });
@@ -36,6 +42,17 @@ module.exports = {
 		return toBeCached.value;
 	},
 
+	/**
+   * Установка значения в БД
+   *
+   * @template T
+   *
+   * @param {string} id айди
+   * @param {string} key поле
+   * @param {T} value значение
+   *
+   * @returns {Promise<T>}
+   */
 	async set(id, key, value) {
 		if (!cache[key]) {
 			cache[key] = new keyv(config.cache, { namespace: key });
@@ -51,6 +68,14 @@ module.exports = {
 		return await (cache[key].set(`${id}`, value));
 	},
 
+	/**
+ * Удаление ключа в БД
+ *
+ * @param {string} id айди
+ * @param {string} key поле
+ *
+ * @returns {Promise}
+ */
 	async delete(id, key) {
 		if (!cache[key]) {
 			cache[key] = new keyv(config.cache, { namespace: key });

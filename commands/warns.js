@@ -1,9 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 const getMember = require('../utils/getMember.js');
 const db = require('../utils/database.js');
 const Discord = require('discord.js');
@@ -42,7 +36,7 @@ module.exports = {
 				`ID: ${warn.id}; DATE: ${new Date(
 					warn.date,
 				).toLocaleString()}; MODER: ${
-					message.guild.members.cache.get(warn.moderator).user.tag
+					message.guild.members.cache.get(warn.moderator)?.user?.tag ?? '<нет данных>'
 				}`,
 				warn.reason,
 			);
