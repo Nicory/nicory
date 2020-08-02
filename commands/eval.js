@@ -21,7 +21,7 @@ module.exports = {
 				error = e;
 				end = new Date();
 			}
-			if (result.length > 6000) {
+			if (result.length > 1000) {
 				result = await haste(result);
 			}
 			if (success) {
