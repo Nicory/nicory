@@ -7,7 +7,9 @@
     "test": "node unitTest.js",
     "start": "node index.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "production": "pm2 start index.js --name nicory",
+    "production:stop": "pm2 stop nicory"
   },
   "author": "KislBall and NeloExt3",
   "license": "LicenseRef-LICENSE",
