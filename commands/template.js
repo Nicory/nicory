@@ -1,5 +1,6 @@
 const removeCodeBlock = require('../utils/removeCodeBlock');
 const invokation = require('../utils/contexts/invokation');
+const limitExecutionTime = require('../utils/limitExecutionTime');
 const template = require('../utils/renderTemplate');
 const { MessageEmbed } = require('discord.js');
 
@@ -9,7 +10,8 @@ module.exports = {
 		const context = await invokation(message);
 		const code = removeCodeBlock(args.join(' '));
 		try {
-			message.channel.send(template(code, context));
+		  const result = await template(code, context);
+			message.channel.send(result);
 		}
 		catch (e) {
 			const embed = new MessageEmbed()
