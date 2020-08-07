@@ -53,7 +53,7 @@ module.exports = {
 			.setTitle('Помощь по командам')
 			.setThumbnail(client.user.avatarURL())
 			.setFooter('By: KislBall and NeloExt3', client.user.avatarURL())
-			.setDescription(`Мой префикс здесь - \`${prefix}\`, но также вы можете @упомянуть меня.\nВы можете сменить префикс командой \`prefix\``);
+			.setDescription(`Мой префикс здесь - \`${prefix}\`, но также вы можете @упомянуть меня.\nВы можете сменить префикс командой \`prefix\`\nВсего команд: **${client.commands.size}**`);
 		try {
 			if (!args[0]) { // sending main help
 				for (const moduleName in client.modules) {
