@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "production": "pm2 start index.js --name nicory",
-    "production:stop": "pm2 stop nicory"
+    "production:stop": "pm2 stop nicory",
+    "dev": "nodemon ."
   },
   "author": "KislBall and NeloExt3",
   "license": "LicenseRef-LICENSE",
@@ -29,6 +30,7 @@
     "node-html-to-image": "^3.0.1"
   },
   "devDependencies": {
-    "eslint": "^7.5.0"
+    "eslint": "^7.5.0",
+    "nodemon": "^2.0.4"
   }
 }
