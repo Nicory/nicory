@@ -12,6 +12,9 @@
     "production:stop": "pm2 stop nicory",
     "dev": "nodemon ."
   },
+  "bin": {
+    "nicory": "bin/nicory.js"
+  },
   "author": "KislBall and NeloExt3",
   "license": "LicenseRef-LICENSE",
   "dependencies": {
@@ -26,7 +29,8 @@
     "ms": "^2.1.2",
     "node-fetch": "^2.6.0",
     "node-html-to-image": "^3.0.1",
-    "twig": "^1.15.1"
+    "twig": "^1.15.1",
+    "yargs": "^15.4.1"
   },
   "devDependencies": {
     "eslint": "^7.5.0",
