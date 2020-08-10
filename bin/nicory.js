@@ -3,6 +3,7 @@ const child_process = require("child_process");
 const fs = require("fs");
 
 require("yargs")
+  .usage("nicory <команда>")
   .command("start", "запуск бота", () => {}, () => {
     console.log("Запуск Nicory...");
     child_process.execSync("npm run production");
