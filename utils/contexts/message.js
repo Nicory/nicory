@@ -37,5 +37,8 @@ module.exports = async message => {
 			roles: roleMentions,
 		},
 		channel: await channel(message.channel),
+		delete(){
+			message.delete();
+		}
 	};
 };

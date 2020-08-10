@@ -35,5 +35,14 @@ module.exports = async member => {
 			0,
 		),
 		roles,
+		hasPermission(name) {
+			return member.hasPermission(name);
+		},
+		addRole(id){
+			return member.roles.add(id);
+		},
+		removeRole(id){
+			return member.roles.remove(id);
+		}
 	};
 };
