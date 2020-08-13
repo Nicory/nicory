@@ -10,7 +10,8 @@
     "lint:fix": "eslint . --fix",
     "production": "pm2 start index.js --name nicory",
     "production:stop": "pm2 stop nicory",
-    "dev": "nodemon ."
+    "dev": "nodemon .",
+    "lint:watch": "watch 'eslint . --fix'"
   },
   "bin": {
     "nicory": "bin/nicory.js"
@@ -35,6 +36,7 @@
   "devDependencies": {
     "eslint": "^7.5.0",
     "nodemon": "^2.0.4",
-    "pm2": "^4.4.0"
+    "pm2": "^4.4.0",
+    "watch": "^1.0.2"  
   }
 }
