@@ -1,3 +1,4 @@
+const start = new Date();
 const fs = require("fs");
 const Discord = require("discord.js");
 const { token } = require("./config.json");
@@ -31,8 +32,12 @@ client.on("messageUpdate", async (oldMsg, newMsg) => {
 require("./events/expEvent.js")(client);
 require("./events/onJoin")(client);
 require("./events/logs.js")(client);
+const end = new Date();
+console.log(`bot loaded in ${end - start}ms`);
 
-client.login(token);
+client.login(token).then(() => {
+  console.log(`bot logged in and ready to go in ${new Date() - start}ms`);
+});
 
 module.exports = client;
 
