@@ -1,11 +1,11 @@
-const keyv = require('keyv'); // for caching and stuff
-const mongodb = require('mongodb');
-const config = require('../config.json');
+const keyv = require("keyv"); // for caching and stuff
+const mongodb = require("mongodb");
+const config = require("../config.json");
 
 const cache = {};
 
 module.exports = {
-	/**
+  /**
    * Получить значение из БД
    *
    * @template defType
@@ -16,33 +16,33 @@ module.exports = {
    *
    * @returns {Promise<defType>}
    */
-	async get(id, key, def) {
-		if (!cache[key]) {
-			cache[key] = new keyv(config.cache, { namespace: key });
-		}
+  async get(id, key, def) {
+    if (!cache[key]) {
+      cache[key] = new keyv(config.cache, { namespace: key });
+    }
 
-		const fromCache = await (cache[key].get(`${id}_${key}`));
+    const fromCache = await (cache[key].get(`${id}_${key}`));
 
-		if (fromCache) {
-			return fromCache;
-		}
+    if (fromCache) {
+      return fromCache;
+    }
 
-		const client = await (mongodb.MongoClient.connect(config.mongo));
-		const collection = client.db('nicory').collection(key);
+    const client = await (mongodb.MongoClient.connect(config.mongo));
+    const collection = client.db("nicory").collection(key);
 
-		const toBeCached = await (collection.findOne({ id }));
-		if (!toBeCached) {
-			return def;
-		}
+    const toBeCached = await (collection.findOne({ id }));
+    if (!toBeCached) {
+      return def;
+    }
 
-		await (cache[key].set(`${id}`, toBeCached.value));
+    await (cache[key].set(`${id}`, toBeCached.value));
 
-		client.close();
+    client.close();
 
-		return toBeCached.value;
-	},
+    return toBeCached.value;
+  },
 
-	/**
+  /**
    * Установка значения в БД
    *
    * @template T
@@ -53,22 +53,22 @@ module.exports = {
    *
    * @returns {Promise<T>}
    */
-	async set(id, key, value) {
-		if (!cache[key]) {
-			cache[key] = new keyv(config.cache, { namespace: key });
-		}
+  async set(id, key, value) {
+    if (!cache[key]) {
+      cache[key] = new keyv(config.cache, { namespace: key });
+    }
 
-		const client = await (mongodb.MongoClient.connect(config.mongo));
-		const collection = client.db('nicory').collection(key);
+    const client = await (mongodb.MongoClient.connect(config.mongo));
+    const collection = client.db("nicory").collection(key);
 
-		collection.updateOne({ id }, { $set: { value } }, { upsert: true });
+    collection.updateOne({ id }, { $set: { value } }, { upsert: true });
 
-		client.close();
+    client.close();
 
-		return await (cache[key].set(`${id}`, value));
-	},
+    return await (cache[key].set(`${id}`, value));
+  },
 
-	/**
+  /**
  * Удаление ключа в БД
  *
  * @param {string} id айди
@@ -76,18 +76,18 @@ module.exports = {
  *
  * @returns {Promise}
  */
-	async delete(id, key) {
-		if (!cache[key]) {
-			cache[key] = new keyv(config.cache, { namespace: key });
-		}
+  async delete(id, key) {
+    if (!cache[key]) {
+      cache[key] = new keyv(config.cache, { namespace: key });
+    }
 
-		const client = await (mongodb.MongoClient.connect(config.mongo));
-		const collection = client.db('nicory').collection(key);
+    const client = await (mongodb.MongoClient.connect(config.mongo));
+    const collection = client.db("nicory").collection(key);
 
-		collection.deleteMany({ id });
+    collection.deleteMany({ id });
 
-		client.close();
+    client.close();
 
-		return await (cache[key].delete(`${id}`));
-	},
+    return await (cache[key].delete(`${id}`));
+  },
 };

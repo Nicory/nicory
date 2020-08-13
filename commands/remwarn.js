@@ -1,47 +1,46 @@
-const getMember = require('../utils/getMember.js');
-const db = require('../utils/database.js');
-const Discord = require('discord.js');
+const getMember = require("../utils/getMember.js");
+const db = require("../utils/database.js");
 
 module.exports = {
-	name: 'remwarn',
-	async execute(message, args, client) {
-		let memberId = '';
-		if (args[0]) {
-			memberId = getMember(args[0]);
-		}
-		else {
-			memberId = message.author.id;
-		}
+  name: "remwarn",
+  async execute(message, args, client) {
+    let memberId = "";
+    if (args[0]) {
+      memberId = getMember(args[0]);
+    }
+    else {
+      memberId = message.author.id;
+    }
 
-		if (!memberId) {
-			return message.channel.send('Укажите участника!');
-		}
+    if (!memberId) {
+      return message.channel.send("Укажите участника!");
+    }
 
-		if (!args[1]) {
-			return message.channel.send('Укажите ID варна!');
-		}
+    if (!args[1]) {
+      return message.channel.send("Укажите ID варна!");
+    }
 
-		const member = message.guild.members.cache.get(memberId);
+    const member = message.guild.members.cache.get(memberId);
 
-		const warns = await db.get(`${message.guild.id}_${member.user.id}`, 'warns', []);
+    const warns = await db.get(`${message.guild.id}_${member.user.id}`, "warns", []);
 
-		const check = warns.filter((el) => el.id === args[1]);
+    const check = warns.filter((el) => el.id === args[1]);
 
-		if (check.length === 0) {
-			return message.channel.send('Неправильный айди варна!');
-		}
+    if (check.length === 0) {
+      return message.channel.send("Неправильный айди варна!");
+    }
 
-		const final = warns.filter((el) => el.id !== args[1]);
+    const final = warns.filter((el) => el.id !== args[1]);
 
-		return db
-			.set(`${message.guild.id}_${member.user.id}`, 'warns', final)
-			.then(() => message.react('✅'))
-			.then(() => client.emit('nicory_unwarn', { id: args[0], moderator: message.member, member }));
-	},
+    return db
+      .set(`${message.guild.id}_${member.user.id}`, "warns", final)
+      .then(() => message.react("✅"))
+      .then(() => client.emit("nicory_unwarn", { id: args[0], moderator: message.member, member }));
+  },
 
-	module: 'Модерация',
-	description: 'Снять предупреждение',
-	usage: 'remwarn <участник> <айди варна>',
-	aliases: ['снятьварн', 'снятьпред'],
-	permissions: ['KICK_MEMBERS'],
+  module: "Модерация",
+  description: "Снять предупреждение",
+  usage: "remwarn <участник> <айди варна>",
+  aliases: ["снятьварн", "снятьпред"],
+  permissions: ["KICK_MEMBERS"],
 };
