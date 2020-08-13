@@ -1,8 +1,8 @@
-const twig = require('twig');
+const twig = require("twig");
 
 module.exports = async (tpl, ctx) => {
-	return await twig.twig({
-		data: tpl,
-		load: () => ""
-	}).renderAsync(ctx);
+  return await twig.twig({
+    data: tpl,
+    load: () => ""
+  }).renderAsync(ctx);
 };
