@@ -2,6 +2,7 @@ const fs = require("fs");
 const Discord = require("discord.js");
 const { token } = require("./config.json");
 const processCommand = require("./utils/processCommand");
+const loadProps = require("./utils/loadProps");
 
 console.log(fs.readFileSync("./assets/banner.txt").toString() + "\n");
 
@@ -10,6 +11,8 @@ require("./utils/logging")();
 const client = new Discord.Client({ fetchAllMembers: true });
 client.commands = new Discord.Collection();
 client.modules = {};
+
+client.props = loadProps();
 
 require("./utils/loadCommands")(client);
 
