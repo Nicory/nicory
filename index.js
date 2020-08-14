@@ -15,7 +15,7 @@ const client = new Discord.Client({
   messageCacheLifetime: 30,
   messageSweepInterval: 60,
   presence,
-  shardCount: 228
+  shardCount: 2
 });
 client.commands = new Discord.Collection();
 client.modules = {};
