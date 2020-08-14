@@ -15,7 +15,7 @@ const client = new Discord.Client({
   messageCacheLifetime: 30,
   messageSweepInterval: 60,
   presence,
-  shardCount: 1
+  shardCount: 228
 });
 client.commands = new Discord.Collection();
 client.modules = {};
@@ -28,14 +28,14 @@ client.once("ready", () => {
   console.log(`logged in to Discord as ${client.user.tag}`);
 });
 
+client.on("message", async (message) => {
+  await processCommand(message, client);
+});
+
 client.on("shardReady", shard => console.log(`shard ${shard} is ready`));
 client.on("shardError", (err, shard) => console.log(`shard ${shard} has thrown an error: ${err}`));
 client.on("shardReconnecting", (shard) => console.log(`shard ${shard} is back`));
 client.on("shardDisconnect", (event, shard) => console.log(`shard ${shard} closed with ${event} event`));
-
-client.on("message", async (message) => {
-  await processCommand(message, client);
-});
 
 client.on("messageUpdate", async (_, newMsg) => {
   await processCommand(newMsg, client);

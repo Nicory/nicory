@@ -1,0 +1,1 @@
+module.exports = (guild, shardsTotal) => (guild >> 22) % shardsTotal;
