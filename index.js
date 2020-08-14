@@ -37,6 +37,9 @@ client.on("shardError", (err, shard) => console.log(`shard ${shard} has thrown a
 client.on("shardReconnecting", (shard) => console.log(`shard ${shard} is back`));
 client.on("shardDisconnect", (event, shard) => console.log(`shard ${shard} closed with ${event} event`));
 
+client.on("warn", console.warn);
+client.on("error", console.error);
+
 client.on("messageUpdate", async (_, newMsg) => {
   await processCommand(newMsg, client);
 });
