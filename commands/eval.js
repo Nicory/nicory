@@ -33,7 +33,7 @@ module.exports = {
       else {
         embed.setColor([255, 0, 0])
           .setTitle("Ошибка!")
-          .addField(":x: Ошибка:", "```js\n" + error + "```");
+          .addField(":x: Ошибка:", "```js\n" + error + "\n" + error.stack + "```");
       }
       embed.setFooter(`Готово за: ${end - start}ms`);
       message.channel.send(embed);

@@ -15,4 +15,6 @@ module.exports = client => {
       client.modules[command.module].push(command);
     }
   }
+
+  console.log(`loaded ${commandFiles.length} commands`);
 };
