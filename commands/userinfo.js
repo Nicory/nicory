@@ -1,4 +1,5 @@
 const db = require("../utils/database.js");
+const ms = require("ms");
 
 module.exports = {
   name: "userinfo",
@@ -59,7 +60,7 @@ module.exports = {
       )
       .addFields({
         name: "Основная информация:",
-        value: `Имя пользователя: ${user}\nАккаунт создан: \nПрисоединился: \nСтатус: ${status}\nИграет в: ${
+        value: `Имя пользователя: ${user}\nАккаунт создан: ${ms(user.user.createdAt)}\nПрисоединился: ${ms(user.joinedAt)}\nСтатус: ${status}\nИграет в: ${
           user.presence.activities.length != 0
             ? user.presence.activities.join(" ")
             : "ничто"
