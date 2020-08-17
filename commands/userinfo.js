@@ -1,5 +1,6 @@
 const db = require("../utils/database.js");
 const ms = require("ms");
+const Discord = require("discord");
 
 module.exports = {
   name: "userinfo",
@@ -21,6 +22,9 @@ module.exports = {
       id = getMember(args[0]);
     }
 
+    /**
+     * @type {Discord.GuildMember}
+     */
     const user = message.guild.members.resolve(id);
 
     if (user.nickname == null) {
@@ -60,7 +64,7 @@ module.exports = {
       )
       .addFields({
         name: "Основная информация:",
-        value: `Имя пользователя: ${user}\nАккаунт создан: ${ms(user.user.createdAt)}\nПрисоединился: ${ms(user.joinedAt)}\nСтатус: ${status}\nИграет в: ${
+        value: `Имя пользователя: ${user}\nАккаунт создан: ${user.user.createdAt}\nПрисоединился: ${user.joinedAt}\nСтатус: ${status}\nИграет в: ${
           user.presence.activities.length != 0
             ? user.presence.activities.join(" ")
             : "ничто"
