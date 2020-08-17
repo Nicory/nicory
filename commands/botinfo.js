@@ -56,7 +56,7 @@ module.exports = {
         },
         {
           name: "Версия:",
-          value: `${package.version} [${config.date}] Debug`,
+          value: `${package.version}`,
           inline: false,
         },
         {
