@@ -1,6 +1,5 @@
 const db = require("../utils/database.js");
 const ms = require("ms");
-const Discord = require("discord");
 
 module.exports = {
   name: "userinfo",
