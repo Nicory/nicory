@@ -80,6 +80,10 @@ function client(endpoint = "https://discord.com/api/v6", authorization = config.
     url += `/members/${id ?? ""}`;
     return fn;
   }
+  fn.role = (id) => {
+    url += `/roles/${id ?? ""}`;
+    return fn;
+  }
 
   return fn;
 }
