@@ -4,6 +4,8 @@ const config = require("../config.json");
 
 const cache = {};
 
+const clientprom = mongodb.MongoClient.connect(config.mongo);
+
 module.exports = {
   /**
    * Получить значение из БД
@@ -21,13 +23,14 @@ module.exports = {
       cache[key] = new keyv(config.cache, { namespace: key });
     }
 
+    const client = await clientprom;
+
     const fromCache = await (cache[key].get(`${id}_${key}`));
 
     if (fromCache) {
       return fromCache;
     }
 
-    const client = await (mongodb.MongoClient.connect(config.mongo));
     const collection = client.db("nicory").collection(key);
 
     const toBeCached = await (collection.findOne({ id }));
@@ -36,9 +39,6 @@ module.exports = {
     }
 
     await (cache[key].set(`${id}`, toBeCached.value));
-
-    client.close();
-
     return toBeCached.value;
   },
 
@@ -58,12 +58,10 @@ module.exports = {
       cache[key] = new keyv(config.cache, { namespace: key });
     }
 
-    const client = await (mongodb.MongoClient.connect(config.mongo));
+    const client = await clientprom;
     const collection = client.db("nicory").collection(key);
 
     collection.updateOne({ id }, { $set: { value } }, { upsert: true });
-
-    client.close();
 
     return await (cache[key].set(`${id}`, value));
   },
@@ -81,12 +79,10 @@ module.exports = {
       cache[key] = new keyv(config.cache, { namespace: key });
     }
 
-    const client = await (mongodb.MongoClient.connect(config.mongo));
+    const client = await clientprom;
     const collection = client.db("nicory").collection(key);
 
     collection.deleteMany({ id });
-
-    client.close();
 
     return await (cache[key].delete(`${id}`));
   },
